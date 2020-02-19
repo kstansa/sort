@@ -61,11 +61,21 @@ public abstract class Sorter
             output += item.toString() + "\n";
         }
         //remove extra \n
-        return output.substring(0, output.length() - 2);
+        return output.substring(0, output.length() - 1);
     }
     
     public void print()
     {
         System.out.println(this.toString());
+    }
+    
+    protected ArrayList<Item> getItemsArrayList()
+    {
+        ArrayList<Item> output = new ArrayList<Item>();
+        for(Item item : items)
+        {
+            output.add(item);
+        }
+        return output;
     }
 }

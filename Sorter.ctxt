@@ -11,4 +11,6 @@ comment3.params=
 comment3.target=java.lang.String\ toString()
 comment4.params=
 comment4.target=void\ print()
-numComments=5
+comment5.params=
+comment5.target=java.util.ArrayList\ getItemsArrayList()
+numComments=6

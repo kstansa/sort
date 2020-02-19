@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.params=n
-comment0.target=Select(int)
+comment0.target=Selection(int)
 comment1.params=
 comment1.target=void\ sort()
 numComments=2

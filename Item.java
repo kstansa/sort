@@ -1,4 +1,3 @@
-
 /**
  * Class Item - describes an item with a size and an id number
  * 
