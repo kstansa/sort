@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=size\ id
+comment0.target=Item(double,\ int)
+comment0.text=\r\n\ Constructs\ Item\ with\ given\ size\ and\ id\r\n\ \r\n\ @param\ size\ size\ of\ the\ item\r\n\ @param\ id\ item\ identifier\r\n
+comment1.params=id
+comment1.target=Item(int)
+comment1.text=\r\n\ Construcs\ Item\ with\ given\ id\ and\ random\ size\r\n\ \r\n\ @param\ id\ item\ identifier\r\n
+comment2.params=
+comment2.target=double\ getSize()
+comment3.params=
+comment3.target=double\ getRoundedSize()
+comment4.params=
+comment4.target=int\ getId()
+comment5.params=
+comment5.target=java.lang.String\ toString()
+numComments=6
