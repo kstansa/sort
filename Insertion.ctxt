@@ -1,8 +1,8 @@
 #BlueJ class context
 comment0.params=n
-comment0.target=Selection(int)
+comment0.target=Insertion(int)
 comment1.params=n\ size
-comment1.target=Selection(int,\ int)
+comment1.target=Insertion(int,\ int)
 comment2.params=
 comment2.target=void\ sort()
 comment3.params=g

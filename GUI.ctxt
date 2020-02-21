@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=sorter
+comment0.target=GUI(Sorter)
+comment1.params=sorter
+comment1.target=void\ updateInitial(Sorter)
+comment2.params=sorter
+comment2.target=void\ updateShuffle(Sorter)
+comment3.params=items\ maxSize
+comment3.target=void\ updateFinal(Item[],\ int)
+comment4.params=items\ maxSize
+comment4.target=void\ updateFinal(java.util.ArrayList,\ int)
+comment5.params=
+comment5.target=void\ updatePanel()
+numComments=6

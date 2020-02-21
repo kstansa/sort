@@ -14,6 +14,12 @@ public class Selection extends Sorter
         this.shuffle();
     }
     
+    public Selection(int n, int size)
+    {
+        super(n, size);
+        this.shuffle();
+    }
+    
     public void sort()
     {
         ArrayList<Item> unsorted = this.getItemsArrayList();
@@ -34,6 +40,33 @@ public class Selection extends Sorter
             }
             //add new item
             sorted[i] = unsorted.remove(smallestIndex);
+        }
+        //update items
+        this.items = sorted;
+    }
+    
+    public void sort(GUI g)
+    {
+        ArrayList<Item> unsorted = this.getItemsArrayList();
+        Item[] sorted = new Item[this.items.length];
+        //for each item
+        for(int i = 0; i < sorted.length; i++)
+        {
+            double smallestSize = unsorted.get(0).size;
+            int smallestIndex = 0;
+            //for each unsorted item
+            for(int j = 0; j < unsorted.size(); j++)
+            {
+                if(unsorted.get(j).size < smallestSize)
+                {
+                    smallestSize = unsorted.get(j).size;
+                    smallestIndex = j;
+                }
+            }
+            //add new item
+            sorted[i] = unsorted.remove(smallestIndex);
+            //update graphics
+            g.updateFinal(sorted, this.maxSize);
         }
         //update items
         this.items = sorted;

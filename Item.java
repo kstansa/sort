@@ -28,7 +28,7 @@ public class Item
      */
     public Item(int id)
     {
-        this(Math.random() * 1000, id);
+        this(Math.random() * 500, id);
     }
     
     /**
