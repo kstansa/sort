@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=
+comment0.target=TextSamplerDemo()
+comment1.params=labels\ textFields\ gridbag\ container
+comment1.target=void\ addLabelTextRows(javax.swing.JLabel[],\ javax.swing.JTextField[],\ java.awt.GridBagLayout,\ java.awt.Container)
+comment2.params=e
+comment2.target=void\ actionPerformed(java.awt.event.ActionEvent)
+comment3.params=
+comment3.target=javax.swing.JEditorPane\ createEditorPane()
+comment4.params=
+comment4.target=javax.swing.JTextPane\ createTextPane()
+comment5.params=doc
+comment5.target=void\ addStylesToDocument(javax.swing.text.StyledDocument)
+comment6.params=path\ description
+comment6.target=javax.swing.ImageIcon\ createImageIcon(java.lang.String,\ java.lang.String)
+comment6.text=Returns\ an\ ImageIcon,\ or\ null\ if\ the\ path\ was\ invalid.
+comment7.params=
+comment7.target=void\ createAndShowGUI()
+comment7.text=\r\n\ Create\ the\ GUI\ and\ show\ it.\ \ For\ thread\ safety,\r\n\ this\ method\ should\ be\ invoked\ from\ the\r\n\ event\ dispatch\ thread.\r\n
+comment8.params=args
+comment8.target=void\ main(java.lang.String[])
+comment9.params=
+comment9.target=void\ run()
+numComments=10
