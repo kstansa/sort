@@ -7,8 +7,9 @@
  */
 public abstract class Sorter
 {
-    private final int MAX_QUANTITY = Integer.MAX_VALUE;
-    private final int MAX_VALUE = Integer.MAX_VALUE;
+    public final int MAX_QUANTITY = Integer.MAX_VALUE;
+    public final int MAX_VALUE = Integer.MAX_VALUE;
+    public static final String[] SORT_TYPES = {"Insertion", "Bubble", "Selection"};
     protected Item[] items;
     private int maxValue;
     private static double delay = 0.001; //delay between actions in seconds
