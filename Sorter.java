@@ -47,7 +47,7 @@ public abstract class Sorter
     {
         return this.items;
     }
-    
+
     /**
      * return number of items in items array
      * 
@@ -77,7 +77,7 @@ public abstract class Sorter
     {
         return Sorter.delay;
     }
-    
+
     public String toString()
     {
         String output = "";
@@ -87,7 +87,7 @@ public abstract class Sorter
         }
         return output.substring(0, output.length() - 1);
     }
-    
+
     public void print()
     {
         System.out.println(this.toString());
@@ -113,7 +113,7 @@ public abstract class Sorter
     public abstract void sort();
 
     public abstract void sort(GUI gui);
-    
+
     /**
      * Shuffles items array using the Fisher-Yates algorithm
      */
@@ -128,6 +128,25 @@ public abstract class Sorter
             items[i] = items[j];
             items[j] = temp;
         }
+    }
+
+    /**
+     * Shuffles items array using the Fisher-Yates algorithm and updates the corrisponding GUI
+     */
+    public void shuffle(GUI gui)
+    {
+        //for all but the first item
+        for(int i = items.length - 1; i > 0; i--)
+        {
+            gui.setSelector(i);
+            //generate a random index
+            int j = (int)(Math.random() * (i + 1));
+            Item temp = items[i];
+            items[i] = items[j];
+            items[j] = temp;
+            gui.updateBars();
+        }
+        //gui.updateBars();
     }
 
     protected void move(int index, int newIndex)

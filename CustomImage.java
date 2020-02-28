@@ -67,7 +67,7 @@ public class CustomImage extends BufferedImage
         //get color int
         int colorInt = color.getRGB();
         //for each y coord
-        for(int y = 0; y > this.getHeight(); y--)
+        for(int y = 0; y < this.getHeight(); y++)
         {
             setRGB(columnIndex, y, colorInt);
         }
@@ -86,6 +86,17 @@ public class CustomImage extends BufferedImage
         int colorInt = color.getRGB();
         //for each y coord starting from bottom to param height
         for(int y = this.getHeight() - 1; y >= this.getHeight() - height; y--)
+        {
+            setRGB(columnIndex, y, colorInt);
+        }
+    }
+    
+    public void paintNub(int columnIndex, Color color)
+    {
+        //get color int
+        int colorInt = color.getRGB();
+        //for first 5 y coord
+        for(int y = 0; y <= 5; y++)
         {
             setRGB(columnIndex, y, colorInt);
         }

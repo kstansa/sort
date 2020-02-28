@@ -14,4 +14,6 @@ comment3.text=\r\n\ paints\ column\r\n\ \r\n\ @param\ columnIndex\ x\ coord\ of\
 comment4.params=columnIndex\ height\ color
 comment4.target=void\ paintColumnTo(int,\ int,\ java.awt.Color)
 comment4.text=\r\n\ paints\ column\ from\ bottom\ to\ specified\ height\r\n\ \r\n\ @param\ columnIndex\ x\ coord\ of\ the\ column\r\n\ @param\ height\ height\ to\ paint\ column\r\n\ @param\ color\ color\ to\ paint\ column\r\n
-numComments=5
+comment5.params=columnIndex\ color
+comment5.target=void\ paintNub(int,\ java.awt.Color)
+numComments=6

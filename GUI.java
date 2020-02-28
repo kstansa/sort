@@ -36,7 +36,6 @@ public class GUI extends JFrame implements ActionListener
     private JPanel graphicsPanel;
     private JButton nextButton;
     public Graphic graphic;
-    private JLabel graphicContainer;
 
     private JLabel texts;
     private Sorter sorter;
@@ -149,67 +148,53 @@ public class GUI extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        if(command.equals("rq"))
-        {
-            quantityBox.setValue(DEFAULT_QUANTITY);
-        }
-
-        else if(command.equals("rmv"))
-        {
-            maxValueBox.setValue(DEFAULT_MAX_VALUE);
-        }
-        else if(command.equals("g"))
-        {
-            //TODO Bounds
-            int q = Integer.parseInt(quantityBox.getText());
-            int mV = Integer.parseInt(maxValueBox.getText());
-            String t = (String)sortTypes.getSelectedItem();
-            sorter = generate(t, q, mV);
-            shuffleButton.setEnabled(true);
-            sortButton.setEnabled(true);
-            printButton.setEnabled(true);
-            nextButton.setEnabled(true);
-        }
-        else if(command.equals("sh"))
-        {
-            sorter.shuffle();
-        }
-        else if(command.equals("s"))
-        {
-            sorter.sort(this);
-        }
-        else if(command.equals("p"))
-        {
-            //Unused
-        }
-        else if(e.getActionCommand().equals("n"))
-        {
-            graphicsPanel.removeAll();
-            graphicsPanel.setLayout(new GridLayout(1, 1));
-            graphic = new Graphic(sorter);
-            graphicContainer = new JLabel(graphic);
-
-            graphicsPanel.add(graphicContainer);
-            graphic.width = graphicsPanel.getWidth();
-            graphic.height = graphicsPanel.getHeight();
-            graphic.updateDisplay();
-            graphicsPanel.addComponentListener
-            (
-                new ComponentAdapter()
-                {
-                    public void componentResized(ComponentEvent componentEvent)
-                    {
-                        graphic.width = graphicsPanel.getWidth();
-                        graphic.height = graphicsPanel.getHeight();
-                        graphic.updateDisplay();
-                    }
-                }
-            );
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unknown action");
-        }
+        
+        //         if(command.equals("rq"))
+        //         {
+        //             quantityBox.setValue(DEFAULT_QUANTITY);
+        //         }
+        // 
+        //         else if(command.equals("rmv"))
+        //         {
+        //             maxValueBox.setValue(DEFAULT_MAX_VALUE);
+        //         }
+        //         else if(command.equals("g"))
+        //         {
+        //             //TODO Bounds
+        //             int q = Integer.parseInt(quantityBox.getText());
+        //             int mV = Integer.parseInt(maxValueBox.getText());
+        //             String t = (String)sortTypes.getSelectedItem();
+        //             sorter = generate(t, q, mV);
+        //             shuffleButton.setEnabled(true);
+        //             sortButton.setEnabled(true);
+        //             printButton.setEnabled(true);
+        //             nextButton.setEnabled(true);
+        //             graphicGeneration();
+        //         }
+        //         else if(command.equals("sh"))
+        //         {
+        //             sorter.shuffle(this);
+        //         }
+        //         else if(command.equals("s"))
+        //         {
+        //             sorter.sort(this);
+        //         }
+        //         else if(command.equals("p"))
+        //         {
+        //             //Unused
+        //             graphic.updateDisplay();
+        //         }
+        //         else if(e.getActionCommand().equals("n"))
+        //         {
+        //             graphicGeneration();
+        //         }
+        //         else
+        //         {
+        //             throw new IllegalArgumentException("Unknown action");
+        //         }
+        GUIActionRunnable runnable = new GUIActionRunnable(command);
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     private static Sorter generate(String t, int q, int mV)
@@ -236,10 +221,112 @@ public class GUI extends JFrame implements ActionListener
     {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable(){public void run(){GUI gui = new GUI();}});
+        javax.swing.SwingUtilities.invokeLater
+        (
+            new Runnable()
+            {
+                public void run()
+                {
+                    GUI gui = new GUI();
+                }
+            }
+        );
     }
-    
+
     //graphics events
-    
+    /**
+     * calls updateBars for the contained graphic object
+     */
+    public void updateBars()
+    {
+        graphic.updateBars();
+    }
+
+    public void setSelector(int index)
+    {
+        graphic.setSelector(index);
+    }
+
+    private void graphicGeneration()
+    {
+        graphicsPanel.removeAll();
+        graphicsPanel.setLayout(new GridLayout(1, 1));
+        graphic = new Graphic(sorter);
+
+        graphicsPanel.add(graphic);
+        graphic.width = graphicsPanel.getWidth();
+        graphic.height = graphicsPanel.getHeight();
+        graphic.updateDisplay();
+        graphicsPanel.addComponentListener
+        (
+            new ComponentAdapter()
+            {
+                public void componentResized(ComponentEvent componentEvent)
+                {
+                    graphic.width = graphicsPanel.getWidth();
+                    graphic.height = graphicsPanel.getHeight();
+                    graphic.updateDisplay();
+                }
+            }
+        );
+    }
+
+    private class GUIActionRunnable implements Runnable
+    {
+        private String command;
+
+        public GUIActionRunnable(String command)
+        {
+            this.command = command;
+        }
+
+        public void run()
+        {
+            if(command.equals("rq"))
+            {
+                quantityBox.setValue(DEFAULT_QUANTITY);
+            }
+
+            else if(command.equals("rmv"))
+            {
+                maxValueBox.setValue(DEFAULT_MAX_VALUE);
+            }
+            else if(command.equals("g"))
+            {
+                //TODO Bounds
+                int q = Integer.parseInt(quantityBox.getText());
+                int mV = Integer.parseInt(maxValueBox.getText());
+                String t = (String)sortTypes.getSelectedItem();
+                sorter = generate(t, q, mV);
+                shuffleButton.setEnabled(true);
+                sortButton.setEnabled(true);
+                //printButton.setEnabled(true);
+                nextButton.setEnabled(true);
+                graphicGeneration();
+            }
+            else if(command.equals("sh"))
+            {
+                sorter.shuffle(GUI.this);
+            }
+            else if(command.equals("s"))
+            {
+                sorter.sort(GUI.this);
+            }
+            else if(command.equals("p"))
+            {
+                //Unused
+                graphic.updateDisplay();
+            }
+            else if(command.equals("n"))
+            {
+                graphicGeneration();
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unknown action");
+            }
+        }
+    }
+
 }
 

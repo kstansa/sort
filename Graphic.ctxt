@@ -1,14 +1,20 @@
 #BlueJ class context
 comment0.params=sorter
 comment0.target=Graphic(Sorter)
+comment0.text=\r\n\ Sole\ constructor.\r\n\ \r\n\ @param\ sorter\ sorter\ object\ to\ be\ linked\ to\ the\ graphic\r\n
 comment1.params=
 comment1.target=void\ initialWrite()
+comment1.text=\r\n\ Performs\ first\ write\ of\ sorter\ data\ to\ image.\r\n
 comment2.params=index
 comment2.target=void\ setSelector(int)
+comment2.text=\r\n\ Sets\ position\ of\ the\ selector\ bar\ in\ the\ sorter's\ array.\r\n\ \r\n\ @param\ index\ index\ to\ move\ selector\ to\r\n
 comment3.params=
 comment3.target=void\ updateBars()
+comment3.text=\r\n\ updates\ the\ graphic\ to\ represent\ current\ state\ of\ the\ sorter's\ array.\r\n
 comment4.params=
 comment4.target=void\ updateDisplay()
+comment4.text=\r\n\ Updates\ the\ label\ container\ to\ match\ the\ current\ image.\r\n
 comment5.params=
 comment5.target=int[]\ findDifferences()
+comment5.text=\r\n\ Finds\ differences\ between\ the\ sorter's\ array\ and\ what\ is\ currently\ being\ displayed.\r\n\ \r\n\ @return\ int\ array\ containing\ the\ indexes\ of\ all\ the\ discrepencies\ between\ the\ two\ arrays\r\n
 numComments=6

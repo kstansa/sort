@@ -10,7 +10,7 @@ public class Insertion extends Sorter
     public Insertion(int quantity, int maxValue)
     {
         super(quantity, maxValue);
-        this.shuffle();
+        //this.shuffle();
     }
 
     public void sort()
