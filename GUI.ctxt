@@ -1,8 +1,18 @@
 #BlueJ class context
 comment0.params=
 comment0.target=GUI()
-comment1.params=args
-comment1.target=void\ main(java.lang.String[])
+comment1.params=
+comment1.target=void\ createGraphicsPanel()
 comment2.params=
-comment2.target=void\ run()
-numComments=3
+comment2.target=void\ createGenerationPanel()
+comment3.params=e
+comment3.target=void\ actionPerformed(java.awt.event.ActionEvent)
+comment4.params=componentEvent
+comment4.target=void\ componentResized(java.awt.event.ComponentEvent)
+comment5.params=t\ q\ mV
+comment5.target=Sorter\ generate(java.lang.String,\ int,\ int)
+comment6.params=args
+comment6.target=void\ main(java.lang.String[])
+comment7.params=
+comment7.target=void\ run()
+numComments=8

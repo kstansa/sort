@@ -34,4 +34,9 @@ public class Bubble extends Sorter
             }
         }
     }
+    
+    public void sort(GUI gui)
+    {
+        
+    }
 }

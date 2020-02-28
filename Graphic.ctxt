@@ -1,4 +1,14 @@
 #BlueJ class context
-comment0.params=
-comment0.target=Graphic()
-numComments=1
+comment0.params=sorter
+comment0.target=Graphic(Sorter)
+comment1.params=
+comment1.target=void\ initialWrite()
+comment2.params=index
+comment2.target=void\ setSelector(int)
+comment3.params=
+comment3.target=void\ updateBars()
+comment4.params=
+comment4.target=void\ updateDisplay()
+comment5.params=
+comment5.target=int[]\ findDifferences()
+numComments=6

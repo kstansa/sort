@@ -47,6 +47,16 @@ public abstract class Sorter
     {
         return this.items;
     }
+    
+    /**
+     * return number of items in items array
+     * 
+     * @return number of items in items array
+     */
+    public int getQuantity()
+    {
+        return this.items.length;
+    }
 
     /**
      * return max value of items
@@ -102,6 +112,8 @@ public abstract class Sorter
      */
     public abstract void sort();
 
+    public abstract void sort(GUI gui);
+    
     /**
      * Shuffles items array using the Fisher-Yates algorithm
      */

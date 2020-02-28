@@ -36,4 +36,9 @@ public class Selection extends Sorter
             this.move(minIndex, i);
         }
     }
+    
+    public void sort(GUI gui)
+    {
+        
+    }
 }

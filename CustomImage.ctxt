@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.params=width\ height
+comment0.target=CustomImage(int,\ int)
+comment0.text=\r\n\ default\ constructor\r\n\ \r\n\ @param\ width\ image\ width\r\n\ @param\ height\ image\ height\r\n
+comment1.params=color
+comment1.target=void\ paintAllPixels(java.awt.Color)
+comment1.text=\r\n\ set\ the\ color\ in\ the\ picture\ to\ the\ passed\ color\r\n\ \r\n\ @param\ color\ the\ color\ to\ set\ to\r\n
+comment2.params=x\ y\ color
+comment2.target=void\ paintPixel(int,\ int,\ java.awt.Color)
+comment2.text=\r\n\ set\ color\ of\ a\ pixel\ in\ the\ image\r\n\ \r\n\ @param\ x\ x\ coord\ of\ the\ pixel\r\n\ @param\ y\ y\ coord\ of\ the\ pixel\r\n\ @param\ color\ the\ color\ to\ set\ the\ pixel\r\n
+comment3.params=columnIndex\ color
+comment3.target=void\ paintColumn(int,\ java.awt.Color)
+comment3.text=\r\n\ paints\ column\r\n\ \r\n\ @param\ columnIndex\ x\ coord\ of\ the\ column\r\n\ @param\ color\ color\ to\ paint\ column\r\n
+comment4.params=columnIndex\ height\ color
+comment4.target=void\ paintColumnTo(int,\ int,\ java.awt.Color)
+comment4.text=\r\n\ paints\ column\ from\ bottom\ to\ specified\ height\r\n\ \r\n\ @param\ columnIndex\ x\ coord\ of\ the\ column\r\n\ @param\ height\ height\ to\ paint\ column\r\n\ @param\ color\ color\ to\ paint\ column\r\n
+numComments=5
