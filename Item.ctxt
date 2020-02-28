@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=value\ id
+comment0.target=Item(double,\ int)
+comment1.params=maxValue\ id
+comment1.target=Item(int,\ int)
+comment2.params=
+comment2.target=double\ getValue()
+comment3.params=
+comment3.target=double\ getValueRounded()
+comment4.params=
+comment4.target=int\ getId()
+comment5.params=
+comment5.target=java.lang.String\ toString()
+numComments=6

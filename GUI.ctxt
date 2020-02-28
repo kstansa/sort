@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.params=
+comment0.target=GUI()
+comment1.params=
+comment1.target=void\ createGraphicsPanel()
+comment10.params=componentEvent
+comment10.target=void\ componentResized(java.awt.event.ComponentEvent)
+comment2.params=
+comment2.target=void\ createGenerationPanel()
+comment3.params=e
+comment3.target=void\ actionPerformed(java.awt.event.ActionEvent)
+comment4.params=t\ q\ mV
+comment4.target=Sorter\ generate(java.lang.String,\ int,\ int)
+comment5.params=args
+comment5.target=void\ main(java.lang.String[])
+comment6.params=
+comment6.target=void\ run()
+comment7.params=
+comment7.target=void\ updateBars()
+comment7.text=\r\n\ calls\ updateBars\ for\ the\ contained\ graphic\ object\r\n
+comment8.params=index
+comment8.target=void\ setSelector(int)
+comment9.params=
+comment9.target=void\ graphicGeneration()
+numComments=11
