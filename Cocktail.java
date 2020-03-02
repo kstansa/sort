@@ -86,6 +86,8 @@ public class Cocktail extends Sorter
                     sorted = false;
                     g.updateBars();
                 }
+                //check for abortFlag
+                if(gui.abortFlag){gui.abortFlag = false; return;}
             }
             //end if sorted flag was not set
             if(sorted){return;}
@@ -104,9 +106,13 @@ public class Cocktail extends Sorter
                     sorted = false;
                     g.updateBars();
                 }
+                //check for abortFlag
+                if(gui.abortFlag){gui.abortFlag = false; return;}
             }
             //increase start
             start++;
         }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 }

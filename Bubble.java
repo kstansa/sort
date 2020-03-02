@@ -34,7 +34,7 @@ public class Bubble extends Sorter
             }
         }
     }
-    
+
     public void sort(GUI gui)
     {
         Graphic g = gui.graphic;
@@ -55,7 +55,11 @@ public class Bubble extends Sorter
                     sorted = false;
                     g.updateBars();
                 }
+                //check for abortFlag
+                if(gui.abortFlag){gui.abortFlag = false; return;}
             }
         }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 }

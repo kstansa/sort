@@ -61,6 +61,10 @@ public class Selection extends Sorter
             //move min item to i
             this.move(minIndex, i);
             g.updateBars();
+            //check for abortFlag
+            if(gui.abortFlag){gui.abortFlag = false; return;}
         }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 }

@@ -51,6 +51,10 @@ public class Insertion extends Sorter
                 this.move(i, j + 1);
                 g.updateBars();
             }
+            //check for abortFlag
+            if(gui.abortFlag){gui.abortFlag = false; return;}
         }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 }

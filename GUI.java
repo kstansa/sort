@@ -19,7 +19,10 @@ public class GUI extends JFrame implements ActionListener
     private static final String[] SORT_TYPES = Sorter.SORT_TYPES;
     private final int DEFAULT_QUANTITY = 250;
     private final int DEFAULT_MAX_VALUE = 1000;
+    private final int MAX_QUANTITY = 10000;
+    private final int MAX_MAX_VALUE = 10000;
     private JMenuBar menu;
+    private boolean processFlag;
 
     private JPanel generationPanel;
     protected JComboBox sortTypes;
@@ -32,6 +35,7 @@ public class GUI extends JFrame implements ActionListener
     private JButton shuffleButton;
     private JButton sortButton;
     private JButton abortButton;
+    public boolean abortFlag = false;
 
     private JPanel graphicsPanel;
     private JButton nextButton;
@@ -148,50 +152,6 @@ public class GUI extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        
-        //         if(command.equals("rq"))
-        //         {
-        //             quantityBox.setValue(DEFAULT_QUANTITY);
-        //         }
-        // 
-        //         else if(command.equals("rmv"))
-        //         {
-        //             maxValueBox.setValue(DEFAULT_MAX_VALUE);
-        //         }
-        //         else if(command.equals("g"))
-        //         {
-        //             //TODO Bounds
-        //             int q = Integer.parseInt(quantityBox.getText());
-        //             int mV = Integer.parseInt(maxValueBox.getText());
-        //             String t = (String)sortTypes.getSelectedItem();
-        //             sorter = generate(t, q, mV);
-        //             shuffleButton.setEnabled(true);
-        //             sortButton.setEnabled(true);
-        //             abortButton.setEnabled(true);
-        //             nextButton.setEnabled(true);
-        //             graphicGeneration();
-        //         }
-        //         else if(command.equals("sh"))
-        //         {
-        //             sorter.shuffle(this);
-        //         }
-        //         else if(command.equals("s"))
-        //         {
-        //             sorter.sort(this);
-        //         }
-        //         else if(command.equals("p"))
-        //         {
-        //             //Unused
-        //             graphic.updateDisplay();
-        //         }
-        //         else if(e.getActionCommand().equals("n"))
-        //         {
-        //             graphicGeneration();
-        //         }
-        //         else
-        //         {
-        //             throw new IllegalArgumentException("Unknown action");
-        //         }
         GUIActionRunnable runnable = new GUIActionRunnable(command);
         Thread thread = new Thread(runnable);
         thread.start();
@@ -218,6 +178,32 @@ public class GUI extends JFrame implements ActionListener
         else
         {
             throw new IllegalArgumentException("Invalid Type");
+        }
+    }
+
+    public void toggleProcess()
+    {
+        //do nothing if no sort object has been generated yet
+        if(sorter == null){return;}
+        //if a process was occuring, update to ended process state
+        if(processFlag)
+        {
+            //update button states
+            shuffleButton.setEnabled(true);
+            sortButton.setEnabled(true);
+            abortButton.setEnabled(false);
+
+            processFlag = false;
+        }
+        //else
+        else
+        {
+            //update button states
+            shuffleButton.setEnabled(false);
+            sortButton.setEnabled(false);
+            abortButton.setEnabled(true);
+
+            processFlag = true;
         }
     }
 
@@ -297,29 +283,35 @@ public class GUI extends JFrame implements ActionListener
             }
             else if(command.equals("g"))
             {
-                //TODO Bounds
+                //TODO inform user of bounds violation
                 int q = Integer.parseInt(quantityBox.getText());
                 int mV = Integer.parseInt(maxValueBox.getText());
+                //end if vars are out of bounds
+                if(q < 1 || mV < 1 || q > MAX_QUANTITY || mV > MAX_MAX_VALUE)
+                {
+                    return;
+                }
                 String t = (String)sortTypes.getSelectedItem();
                 sorter = generate(t, q, mV);
+                processFlag = false;
                 shuffleButton.setEnabled(true);
                 sortButton.setEnabled(true);
-                abortButton.setEnabled(true);
-                nextButton.setEnabled(true);
                 graphicGeneration();
             }
             else if(command.equals("sh"))
             {
+                toggleProcess();
                 sorter.shuffle(GUI.this);
             }
             else if(command.equals("s"))
             {
+                toggleProcess();
                 sorter.sort(GUI.this);
             }
             else if(command.equals("a"))
             {
-                //TODO impliment process abort
-                System.out.println("jk I havent implemented this feature yet get fucked");
+                abortFlag = true;
+                toggleProcess();
             }
             else if(command.equals("n"))
             {

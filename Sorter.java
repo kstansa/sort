@@ -145,8 +145,11 @@ public abstract class Sorter
             items[i] = items[j];
             items[j] = temp;
             gui.updateBars();
+            //check for abortFlag
+            if(gui.abortFlag){gui.abortFlag = false; return;}
         }
-        //gui.updateBars();
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 
     protected void move(int index, int newIndex)
