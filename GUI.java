@@ -8,7 +8,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 
 /**
- * Class GUI - represents the user interface for sort
+ * Class GUI - represents the user interface for sort object
  * 
  * @author Liam Geyer
  * @version v1.0.0
@@ -22,7 +22,6 @@ public class GUI extends JFrame
     private final int MAX_QUANTITY = 10000;
     private final int MAX_MAX_VALUE = 10000;
     private JLabel threadCount = new JLabel("text");
-    private JMenuBar menu;
     private boolean processFlag = false;
     private boolean abortFlag = false;
 
@@ -34,6 +33,9 @@ public class GUI extends JFrame
     private JLabel texts;
     private Sorter sorter;
 
+    /**
+     * sole constructor for the GUI object
+     */
     public GUI()
     {
         super("Sort Demos");
@@ -59,16 +61,19 @@ public class GUI extends JFrame
         setMinimumSize(new Dimension(500, 500));
         setVisible(true);
     }
-
+    
+    //graphics events
+    /**
+     * generates the graphics panel
+     */
     private void generateGraphics()
     {
         //TODO Proper Layout
-        graphicsPanel = new JPanel(new GridLayout(1, 1));
+        graphicsPanel = new JPanel(new BorderLayout());
 
-        graphicsPanel.add(new JLabel("Placeholder Text"));
+        graphicsPanel.add(new JLabel("Placeholder Text"), BorderLayout.CENTER);
     }
-
-    //graphics events
+    
     /**
      * calls updateBars for the contained graphic object
      */
@@ -77,11 +82,17 @@ public class GUI extends JFrame
         graphic.updateBars();
     }
 
+    /**
+     * calls setSelector for the contained graphic object
+     */
     public void setSelector(int index)
     {
         graphic.setSelector(index);
     }
 
+    /**
+     * generate and add graphic to graphics panel
+     */
     private void graphicGeneration()
     {
         //recreate the panel to remove old items
@@ -108,6 +119,9 @@ public class GUI extends JFrame
         );
     }
 
+    /**
+     * generates the sort object of the specified type with the specified quantity and maxValue
+     */
     private static Sorter generate(String t, int q, int mV)
     {
         if(t.equals(SORT_TYPES[0]))
@@ -132,15 +146,15 @@ public class GUI extends JFrame
         }
     }
 
+    public boolean getAbortFlag()
+    {
+        return abortFlag;
+    }
+
     //public generationPanel methods
     public void toggleProcess()
     {
         generationPanel.toggleProcess();
-    }
-
-    public boolean getAbortFlag()
-    {
-        return abortFlag;
     }
 
     public void abort()
@@ -149,6 +163,9 @@ public class GUI extends JFrame
         toggleProcess();
     }
 
+    /**
+     * GenerationPanel Class - represents a panel containing the controls for generating and modifying sort objects
+     */
     private class GenerationPanel extends JPanel implements ActionListener
     {
         protected JComboBox sortTypes;
@@ -239,6 +256,7 @@ public class GUI extends JFrame
             if(processFlag)
             {
                 //update button states
+                generateButton.setEnabled(true);
                 shuffleButton.setEnabled(true);
                 sortButton.setEnabled(true);
                 abortButton.setEnabled(false);
@@ -249,6 +267,7 @@ public class GUI extends JFrame
             else
             {
                 //update button states
+                generateButton.setEnabled(false);
                 shuffleButton.setEnabled(false);
                 sortButton.setEnabled(false);
                 abortButton.setEnabled(true);

@@ -12,7 +12,6 @@ public abstract class Sorter
     public static final String[] SORT_TYPES = {"Insertion", "Bubble", "Selection", "Cocktail"};
     protected Item[] items;
     private int maxValue;
-    private static double delay = 0.001; //delay between actions in seconds
 
     /**
      * Constructor for sorter
@@ -37,9 +36,9 @@ public abstract class Sorter
         }
     }
 
-    //Getter methods
+    //Accesser methods
     /**
-     * return items array
+     * returns items array
      * 
      * @return items array
      */
@@ -49,7 +48,7 @@ public abstract class Sorter
     }
 
     /**
-     * return number of items in items array
+     * returns number of items in items array
      * 
      * @return number of items in items array
      */
@@ -59,7 +58,7 @@ public abstract class Sorter
     }
 
     /**
-     * return max value of items
+     * returns max value of items
      * 
      * @return max value of items in items
      */
@@ -69,15 +68,10 @@ public abstract class Sorter
     }
 
     /**
-     * return global delay value
+     * returns a String representation of the item array in the form of a String representation of each item followed by a new line character with the exception of the last item
      * 
-     * @return global delay value
+     * @return String representation of the item array
      */
-    public double getDelay()
-    {
-        return Sorter.delay;
-    }
-
     public String toString()
     {
         String output = "";
@@ -88,30 +82,17 @@ public abstract class Sorter
         return output.substring(0, output.length() - 1);
     }
 
-    public void print()
-    {
-        System.out.println(this.toString());
-    }
-
-    //Setter methods
-    /**
-     * Set global delay value
-     * 
-     * @param delay new delay
-     * @throws IllegalArgumentException if delay is invalid
-     */
-    public static void setDelay(double delay)
-    {
-        if(delay < 0){throw new IllegalArgumentException("Quantity must be greater than or equal to 0");}
-        Sorter.delay = delay;
-    }
-
     //Mutator Methods
     /**
      * Sort the items array using the method described by the class
      */
     public abstract void sort();
 
+    /**
+     * Sort the items array using the method described by the class and updates the corrisponding GUI object
+     * 
+     * @param gui GUI to update
+     */
     public abstract void sort(GUI gui);
 
     /**
@@ -132,6 +113,8 @@ public abstract class Sorter
 
     /**
      * Shuffles items array using the Fisher-Yates algorithm and updates the corrisponding GUI
+     * 
+     * @param gui GUI to update
      */
     public void shuffle(GUI gui)
     {
@@ -152,10 +135,19 @@ public abstract class Sorter
         gui.toggleProcess();
     }
 
+    /**
+     * moves an item in the array from index to newIndex, objects as needed
+     * 
+     * @param index index of item to move
+     * @param newIndex index to move item to
+     * @throws ArrayIndexOutOfBoundsException if either index or newIndex are invalid indexes
+     */
     protected void move(int index, int newIndex)
     {
         //do nothing if index and newIndex are the same
         if(index == newIndex){return;}
+        //throw exception if indexes are invalid
+        if(index < 0 || index > items.length || newIndex < 0 || newIndex > items.length){throw new ArrayIndexOutOfBoundsException("index and newIndex must be valid indexes for the item array");}
         Item item = items[index];
         //if newIndex comes before index
         if(newIndex < index)
