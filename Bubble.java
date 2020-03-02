@@ -37,7 +37,6 @@ public class Bubble extends Sorter
 
     public void sort(GUI gui)
     {
-        Graphic g = gui.graphic;
         boolean sorted = false;
         while(!sorted)
         {
@@ -45,7 +44,7 @@ public class Bubble extends Sorter
             //for each item pair
             for(int i = 0; i < this.items.length - 1; i++)
             {
-                g.setSelector(i);
+                gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
                 if(this.items[i].getValue() > this.items[i + 1].getValue())
                 {
@@ -53,7 +52,7 @@ public class Bubble extends Sorter
                     this.items[i] = this.items[i + 1];
                     this.items[i + 1] = temp;
                     sorted = false;
-                    g.updateBars();
+                    gui.updateBars();
                 }
                 //check for abortFlag
                 if(gui.abortFlag){gui.abortFlag = false; return;}

@@ -37,9 +37,7 @@ public class GUI extends JFrame implements ActionListener
     private JButton abortButton;
     public boolean abortFlag = false;
 
-    private JPanel graphicsPanel;
-    private JButton nextButton;
-    public Graphic graphic;
+    private GraphicsPanel graphicsPanel;
 
     private JLabel texts;
     private Sorter sorter;
@@ -49,7 +47,7 @@ public class GUI extends JFrame implements ActionListener
         super("Sort Demos");
         //TODO Sizing/proper defaults
         //graphicsPanel = new GraphicsPanel(this);
-        createGraphicsPanel();
+        GraphicsPanel graphicsPanel = new GraphicsPanel();
         //generationPanel = new GenerationPanel(this);
         createGenerationPanel();
 
@@ -62,20 +60,6 @@ public class GUI extends JFrame implements ActionListener
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(500, 500));
         setVisible(true);
-    }
-
-    private void createGraphicsPanel()
-    {
-        //TODO Proper Layout
-        graphicsPanel = new JPanel(new GridLayout(1, 1));
-
-        nextButton = new JButton("draw");
-        nextButton.setEnabled(false);
-        nextButton.setActionCommand("n");
-        nextButton.addActionListener(this);
-
-        //addGraphic();
-        graphicsPanel.add(nextButton);
     }
 
     private void createGenerationPanel()
@@ -207,6 +191,17 @@ public class GUI extends JFrame implements ActionListener
         }
     }
 
+    //public graphics events
+    public void updateBars()
+    {
+        graphicsPanel.updateBars();
+    }
+
+    public void setSelector(int index)
+    {
+        graphicsPanel.setSelector(index);
+    }
+
     public static void main(String[] args)
     {
         //Schedule a job for the event-dispatching thread:
@@ -223,44 +218,64 @@ public class GUI extends JFrame implements ActionListener
         );
     }
 
-    //graphics events
-    /**
-     * calls updateBars for the contained graphic object
-     */
-    public void updateBars()
+    private class GraphicsPanel extends JPanel
     {
-        graphic.updateBars();
-    }
+        private JButton nextButton;
+        public Graphic graphic;
 
-    public void setSelector(int index)
-    {
-        graphic.setSelector(index);
-    }
+        public GraphicsPanel()
+        {
+            //TODO Proper Layout
+            super(new GridLayout(1, 1));
 
-    private void graphicGeneration()
-    {
-        graphicsPanel.removeAll();
-        graphicsPanel.setLayout(new GridLayout(1, 1));
-        graphic = new Graphic(sorter);
+            //addGraphic();
+            add(nextButton);
+        }
 
-        graphicsPanel.add(graphic);
-        graphic.width = graphicsPanel.getWidth();
-        graphic.height = graphicsPanel.getHeight();
-        graphic.updateDisplay();
-        graphicsPanel.addComponentListener
-        (
-            new ComponentAdapter()
-            {
-                public void componentResized(ComponentEvent componentEvent)
+        //graphics events
+        /**
+         * calls updateBars for the contained graphic object
+         */
+        public void updateBars()
+        {
+            graphic.updateBars();
+        }
+
+        public void setSelector(int index)
+        {
+            graphic.setSelector(index);
+        }
+
+        private void graphicGeneration()
+        {
+            graphicsPanel.removeAll();
+            graphicsPanel.setLayout(new GridLayout(1, 1));
+            graphic = new Graphic(sorter);
+
+            graphicsPanel.add(graphic);
+            graphic.width = graphicsPanel.getWidth();
+            graphic.height = graphicsPanel.getHeight();
+            graphic.updateDisplay();
+            graphicsPanel.addComponentListener
+            (
+                new ComponentAdapter()
                 {
-                    graphic.width = graphicsPanel.getWidth();
-                    graphic.height = graphicsPanel.getHeight();
-                    graphic.updateDisplay();
+                    public void componentResized(ComponentEvent componentEvent)
+                    {
+                        graphic.width = graphicsPanel.getWidth();
+                        graphic.height = graphicsPanel.getHeight();
+                        graphic.updateDisplay();
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
+    private class GenerationPanel extends JPanel
+    {
+        
+    }
+    
     private class GUIActionRunnable implements Runnable
     {
         private String command;
@@ -296,7 +311,7 @@ public class GUI extends JFrame implements ActionListener
                 processFlag = false;
                 shuffleButton.setEnabled(true);
                 sortButton.setEnabled(true);
-                graphicGeneration();
+                graphicsPanel.graphicGeneration();
             }
             else if(command.equals("sh"))
             {
@@ -315,7 +330,7 @@ public class GUI extends JFrame implements ActionListener
             }
             else if(command.equals("n"))
             {
-                graphicGeneration();
+                graphicsPanel.graphicGeneration();
             }
             else
             {

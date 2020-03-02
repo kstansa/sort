@@ -65,7 +65,6 @@ public class Cocktail extends Sorter
 
     public void sort(GUI gui)
     {
-        Graphic g = gui.graphic;
         boolean sorted = false;
         int start = 0;
         int end = this.items.length - 1;
@@ -76,7 +75,7 @@ public class Cocktail extends Sorter
             //forward pass
             for(int i = start; i < end; i++)
             {
-                g.setSelector(i);
+                gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
                 if(this.items[i].getValue() > this.items[i + 1].getValue())
                 {
@@ -84,7 +83,7 @@ public class Cocktail extends Sorter
                     this.items[i] = this.items[i + 1];
                     this.items[i + 1] = temp;
                     sorted = false;
-                    g.updateBars();
+                    gui.updateBars();
                 }
                 //check for abortFlag
                 if(gui.abortFlag){gui.abortFlag = false; return;}
@@ -96,7 +95,7 @@ public class Cocktail extends Sorter
             //reverse pass
             for(int i = end - 1; i >= start; i--)
             {
-                g.setSelector(i);
+                gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
                 if(this.items[i].getValue() > this.items[i + 1].getValue())
                 {
@@ -104,7 +103,7 @@ public class Cocktail extends Sorter
                     this.items[i] = this.items[i + 1];
                     this.items[i + 1] = temp;
                     sorted = false;
-                    g.updateBars();
+                    gui.updateBars();
                 }
                 //check for abortFlag
                 if(gui.abortFlag){gui.abortFlag = false; return;}

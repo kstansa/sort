@@ -39,18 +39,17 @@ public class Selection extends Sorter
 
     public void sort(GUI gui)
     {
-        Graphic g = gui.graphic;
         //for each item
         for(int i = 0; i < items.length; i++)
         {
-            g.setSelector(i);
+            gui.setSelector(i);
             //initialize minimums
             double minValue = items[i].getValue();
             int minIndex = i;
             //for each unsorted item
             for(int j = i + 1; j < items.length; j++)
             {
-                g.setSelector(j);
+                gui.setSelector(j);
                 //update min value if item j is smaller
                 if(items[j].getValue() < minValue)
                 {
@@ -60,7 +59,7 @@ public class Selection extends Sorter
             }
             //move min item to i
             this.move(minIndex, i);
-            g.updateBars();
+            gui.updateBars();
             //check for abortFlag
             if(gui.abortFlag){gui.abortFlag = false; return;}
         }

@@ -34,7 +34,6 @@ public class Insertion extends Sorter
 
     public void sort(GUI gui)
     {
-        Graphic g = gui.graphic;
         //for each item
         for(int i = 1; i < items.length; i++)
         {
@@ -42,14 +41,14 @@ public class Insertion extends Sorter
             //while the previous item is greater than the current item and j is an index, decrement j
             while(j != -1 && items[i].getValue() < items[j].getValue())
             {
-                g.setSelector(j);
+                gui.setSelector(j);
                 j--;
             }
             //if j changed, move item at i to j + 1
             if(j != i - 1)
             {
                 this.move(i, j + 1);
-                g.updateBars();
+                gui.updateBars();
             }
             //check for abortFlag
             if(gui.abortFlag){gui.abortFlag = false; return;}
