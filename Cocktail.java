@@ -86,7 +86,7 @@ public class Cocktail extends Sorter
                     gui.updateBars();
                 }
                 //check for abortFlag
-                if(gui.abortFlag){gui.abortFlag = false; return;}
+                if(gui.getAbortFlag()){gui.abort(); return;}
             }
             //end if sorted flag was not set
             if(sorted){return;}
@@ -106,7 +106,7 @@ public class Cocktail extends Sorter
                     gui.updateBars();
                 }
                 //check for abortFlag
-                if(gui.abortFlag){gui.abortFlag = false; return;}
+                if(gui.getAbortFlag()){gui.abort(); return;}
             }
             //increase start
             start++;
