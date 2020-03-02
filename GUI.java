@@ -30,7 +30,6 @@ public class GUI extends JFrame
     private JPanel graphicsPanel;
     private Graphic graphic;
 
-    private JLabel texts;
     private Sorter sorter;
 
     /**
