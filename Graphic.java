@@ -79,7 +79,7 @@ public class Graphic extends JLabel
      */
     public void setSelector(int index)
     {
-        //repaint column of old selector location
+        //repaint old nub
         image.paintNub(selectorIndex, BACKGROUND);
         //image.paintColumnTo(selectorIndex, (int)(displayedArr[selectorIndex].getValue()), BARS);
 
@@ -98,17 +98,17 @@ public class Graphic extends JLabel
     {
         //find indexes of moved items
         int[] diffIndexes = findDifferences();
-        
+
         //update displayedArr
         displayedArr = currentArr;
-        
+
         //update bars at specified indexes
         for(int index : diffIndexes)
         {
             image.paintColumn(index, BACKGROUND);
             image.paintColumnTo(index, (int)(displayedArr[index].getValue()), BARS);
         }
-        
+
         //update display
         updateDisplay();
     }

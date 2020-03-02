@@ -93,12 +93,7 @@ public class CustomImage extends BufferedImage
     
     public void paintNub(int columnIndex, Color color)
     {
-        //get color int
-        int colorInt = color.getRGB();
-        //for first 5 y coord
-        for(int y = 0; y <= 5; y++)
-        {
-            setRGB(columnIndex, y, colorInt);
-        }
+        //paint top pixel of row
+        setRGB(columnIndex, 0, color.getRGB());
     }
 }

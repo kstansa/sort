@@ -31,7 +31,7 @@ public class GUI extends JFrame implements ActionListener
     private JButton generateButton;
     private JButton shuffleButton;
     private JButton sortButton;
-    private JButton printButton;
+    private JButton abortButton;
 
     private JPanel graphicsPanel;
     private JButton nextButton;
@@ -119,11 +119,11 @@ public class GUI extends JFrame implements ActionListener
         sortButton.setEnabled(false);
         sortButton.setActionCommand("s");
         sortButton.addActionListener(this);
-        //print button (Temp use: Reset graphic)
-        printButton = new JButton("print");
-        printButton.setEnabled(false);
-        printButton.setActionCommand("p");
-        printButton.addActionListener(this);
+        //abort button
+        abortButton = new JButton("abort");
+        abortButton.setEnabled(false);
+        abortButton.setActionCommand("a");
+        abortButton.addActionListener(this);
 
         //add all to panel
         generationPanel.add(new JLabel("Sort Type Options"));
@@ -139,7 +139,7 @@ public class GUI extends JFrame implements ActionListener
         generationPanel.add(generateButton);
         generationPanel.add(shuffleButton);
         generationPanel.add(sortButton);
-        generationPanel.add(printButton);
+        generationPanel.add(abortButton);
 
         //Set panel size
         generationPanel.setPreferredSize(new Dimension(500, 250));
@@ -167,7 +167,7 @@ public class GUI extends JFrame implements ActionListener
         //             sorter = generate(t, q, mV);
         //             shuffleButton.setEnabled(true);
         //             sortButton.setEnabled(true);
-        //             printButton.setEnabled(true);
+        //             abortButton.setEnabled(true);
         //             nextButton.setEnabled(true);
         //             graphicGeneration();
         //         }
@@ -210,6 +210,10 @@ public class GUI extends JFrame implements ActionListener
         else if(t.equals(SORT_TYPES[2]))
         {
             return new Selection(q, mV);
+        }
+        else if(t.equals(SORT_TYPES[3]))
+        {
+            return new Cocktail(q, mV);
         }
         else
         {
@@ -300,7 +304,7 @@ public class GUI extends JFrame implements ActionListener
                 sorter = generate(t, q, mV);
                 shuffleButton.setEnabled(true);
                 sortButton.setEnabled(true);
-                //printButton.setEnabled(true);
+                abortButton.setEnabled(true);
                 nextButton.setEnabled(true);
                 graphicGeneration();
             }
@@ -312,10 +316,10 @@ public class GUI extends JFrame implements ActionListener
             {
                 sorter.sort(GUI.this);
             }
-            else if(command.equals("p"))
+            else if(command.equals("a"))
             {
-                //Unused
-                graphic.updateDisplay();
+                //TODO impliment process abort
+                System.out.println("jk I havent implemented this feature yet get fucked");
             }
             else if(command.equals("n"))
             {
@@ -327,6 +331,5 @@ public class GUI extends JFrame implements ActionListener
             }
         }
     }
-
 }
 
