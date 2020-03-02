@@ -21,12 +21,15 @@ public class GUI extends JFrame
     private final int DEFAULT_MAX_VALUE = 1000;
     private final int MAX_QUANTITY = 10000;
     private final int MAX_MAX_VALUE = 10000;
+    private JLabel threadCount = new JLabel("text");
     private JMenuBar menu;
-    private boolean processFlag;
+    private boolean processFlag = false;
+    private boolean abortFlag = false;
 
     private GenerationPanel generationPanel;
 
-    private GraphicsPanel graphicsPanel;
+    private JPanel graphicsPanel;
+    private Graphic graphic;
 
     private JLabel texts;
     private Sorter sorter;
@@ -34,12 +37,18 @@ public class GUI extends JFrame
     public GUI()
     {
         super("Sort Demos");
-        //TODO Sizing/proper defaults
-        //graphicsPanel = new GraphicsPanel(this);
-        GraphicsPanel graphicsPanel = new GraphicsPanel();
-        //generationPanel = new GenerationPanel(this);
-        GenerationPanel generationPanel = new GenerationPanel();
+        //create thread counter
+        ThreadCounterRunnable tCRunnable = new ThreadCounterRunnable();
+        Thread tCThread = new Thread(tCRunnable);
+        tCThread.start();
 
+        //TODO Sizing/proper defaults
+        //create panels
+        generateGraphics();
+
+        generationPanel = new GenerationPanel();
+
+        //create content pane
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.add(graphicsPanel, BorderLayout.CENTER);
         contentPane.add(generationPanel, BorderLayout.PAGE_START);
@@ -49,6 +58,54 @@ public class GUI extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(500, 500));
         setVisible(true);
+    }
+
+    private void generateGraphics()
+    {
+        //TODO Proper Layout
+        graphicsPanel = new JPanel(new GridLayout(1, 1));
+
+        graphicsPanel.add(new JLabel("Placeholder Text"));
+    }
+
+    //graphics events
+    /**
+     * calls updateBars for the contained graphic object
+     */
+    public void updateBars()
+    {
+        graphic.updateBars();
+    }
+
+    public void setSelector(int index)
+    {
+        graphic.setSelector(index);
+    }
+
+    private void graphicGeneration()
+    {
+        //recreate the panel to remove old items
+        graphicsPanel.removeAll();
+        graphicsPanel.setLayout(new GridLayout(1, 1));
+        graphic = new Graphic(sorter);
+
+        graphicsPanel.add(graphic);
+        graphic.width = graphicsPanel.getWidth();
+        graphic.height = graphicsPanel.getHeight();
+        graphic.updateDisplay();
+        //keeps graphic at the same size as the panel
+        graphicsPanel.addComponentListener
+        (
+            new ComponentAdapter()
+            {
+                public void componentResized(ComponentEvent componentEvent)
+                {
+                    graphic.width = graphicsPanel.getWidth();
+                    graphic.height = graphicsPanel.getHeight();
+                    graphic.updateDisplay();
+                }
+            }
+        );
     }
 
     private static Sorter generate(String t, int q, int mV)
@@ -80,87 +137,16 @@ public class GUI extends JFrame
     {
         generationPanel.toggleProcess();
     }
-    
+
     public boolean getAbortFlag()
     {
-        return generationPanel.abortFlag;
+        return abortFlag;
     }
-    
+
     public void abort()
     {
-        generationPanel.abortFlag = false;
+        abortFlag = false;
         toggleProcess();
-    }
-
-    //public graphics events
-    public void updateBars()
-    {
-        graphicsPanel.updateBars();
-    }
-
-    public void setSelector(int index)
-    {
-        graphicsPanel.setSelector(index);
-    }
-    
-    private void graphicGeneration()
-    {
-        graphicsPanel.graphicGeneration();
-    }
-
-    //private classes
-    private class GraphicsPanel extends JPanel
-    {
-        private JButton nextButton;
-        private Graphic graphic;
-
-        public GraphicsPanel()
-        {
-            //TODO Proper Layout
-            super(new GridLayout(1, 1));
-            
-            add(new JLabel("test"));
-        }
-
-        //graphics events
-        /**
-         * calls updateBars for the contained graphic object
-         */
-        public void updateBars()
-        {
-            graphic.updateBars();
-        }
-
-        public void setSelector(int index)
-        {
-            graphic.setSelector(index);
-        }
-
-        public void graphicGeneration()
-        {
-            //recreate the panel to remove old items
-            graphicsPanel.removeAll();
-            graphicsPanel.setLayout(new GridLayout(1, 1));
-            graphic = new Graphic(sorter);
-
-            graphicsPanel.add(graphic);
-            graphic.width = graphicsPanel.getWidth();
-            graphic.height = graphicsPanel.getHeight();
-            graphic.updateDisplay();
-            //keeps graphic at the same size as the panel
-            graphicsPanel.addComponentListener
-            (
-                new ComponentAdapter()
-                {
-                    public void componentResized(ComponentEvent componentEvent)
-                    {
-                        graphic.width = graphicsPanel.getWidth();
-                        graphic.height = graphicsPanel.getHeight();
-                        graphic.updateDisplay();
-                    }
-                }
-            );
-        }
     }
 
     private class GenerationPanel extends JPanel implements ActionListener
@@ -175,7 +161,6 @@ public class GUI extends JFrame
         private JButton shuffleButton;
         private JButton sortButton;
         private JButton abortButton;
-        private boolean abortFlag = false;
 
         public GenerationPanel()
         {
@@ -193,7 +178,6 @@ public class GUI extends JFrame
             quantityBox = new JFormattedTextField(formatter);
             quantityBox.setColumns(10);
             quantityBox.setValue(DEFAULT_QUANTITY);
-            //quantityBox.addPropertyChangeListener(this);
 
             quantityReset = new JButton("reset");
             quantityReset.setActionCommand("rq");
@@ -202,7 +186,6 @@ public class GUI extends JFrame
             maxValueBox = new JFormattedTextField(formatter);
             maxValueBox.setColumns(10);
             maxValueBox.setValue(DEFAULT_MAX_VALUE);
-            //maxValueBox.addPropertyChangeListener(this);
 
             maxValueReset = new JButton("reset");
             maxValueReset.setActionCommand("rmv");
@@ -236,7 +219,7 @@ public class GUI extends JFrame
             add(quantityBox);
             add(quantityReset);
             add(new JLabel("Max Value: "));
-            add(new JLabel(""));
+            add(threadCount);
             add(maxValueBox);
             add(maxValueReset);
             add(generateButton);
@@ -314,7 +297,6 @@ public class GUI extends JFrame
                     }
                     String t = (String)sortTypes.getSelectedItem();
                     sorter = generate(t, q, mV);
-                    processFlag = false;
                     shuffleButton.setEnabled(true);
                     sortButton.setEnabled(true);
                     graphicGeneration();
@@ -337,6 +319,18 @@ public class GUI extends JFrame
                 {
                     throw new IllegalArgumentException("Unknown action");
                 }
+            }
+        }
+    }
+    private class ThreadCounterRunnable implements Runnable
+    {
+        public void run()
+        {
+            ThreadGroup currentTG = Thread.currentThread().getThreadGroup();
+            
+            while(true)
+            {
+                threadCount.setText("Thread Count for Thread Group " + currentTG.getName() + ": " + currentTG.activeCount());
             }
         }
     }
