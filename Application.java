@@ -7,8 +7,18 @@
  */
 public class Application
 {
+    private static boolean devArg = false;
+    private static boolean verbArg = false;
+    
     public static void main(String[] args)
     {
+        //check args
+        for(int i = 0; i < args.length; i++)
+        {
+            if(args[i].matches("^-d((ev(eloper)?)|(ebug))?$")){devArg = true;}
+            else if (args[i].matches("^-v(erb(ose)?)?$")){verbArg = true;}
+            else{System.err.println(args[i] + " is not a valid argument");}
+        }
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater
@@ -17,7 +27,7 @@ public class Application
             {
                 public void run()
                 {
-                    GUI gui = new GUI();
+                    GUI gui = new GUI(devArg, verbArg);
                 }
             }
         );

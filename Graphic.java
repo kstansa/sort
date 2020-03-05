@@ -73,22 +73,22 @@ public class Graphic extends JLabel
     }
 
     /**
-     * Sets position of the selector bar in the sorter's array.
+     * Sets position of the selector bar in the sorter's array. Currently depreciated due to efficency concerns
      * 
      * @param index index to move selector to
      */
     public void setSelector(int index)
     {
-        //repaint old nub
-        image.paintNub(selectorIndex, BACKGROUND);
-        //image.paintColumnTo(selectorIndex, (int)(displayedArr[selectorIndex].getValue()), BARS);
-
-        //paint in new selector
-        image.paintNub(index, SELECTOR);
-        selectorIndex = index;
-
-        //update display
-        updateDisplay();
+        //         //repaint old nub
+        //         image.paintNub(selectorIndex, BACKGROUND);
+        //         //image.paintColumnTo(selectorIndex, (int)(displayedArr[selectorIndex].getValue()), BARS);
+        // 
+        //         //paint in new selector
+        //         image.paintNub(index, SELECTOR);
+        //         selectorIndex = index;
+        // 
+        //         //update display
+        //         updateDisplay();
     }
 
     /**
@@ -118,14 +118,10 @@ public class Graphic extends JLabel
      */
     public void updateDisplay()
     {
-        //hide label so that it will reappear with correct image
-        //setVisible(false);
         //create scaled version of image
         scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
         //update label icon
         setIcon(new ImageIcon(scaledImage));
-        //reset visibility to update what user sees
-        //setVisible(true);
     }
 
     /**
