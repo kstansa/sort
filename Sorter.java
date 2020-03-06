@@ -1,3 +1,4 @@
+import java.lang.reflect.*;
 
 /**
  * Abstract class Sorter - describes an array of items to be sorted
@@ -5,11 +6,12 @@
  * @author Liam Geyer
  * @version v1.0.0
  */
-public abstract class Sorter
+public class Sorter
 {
     public final int MAX_QUANTITY = Integer.MAX_VALUE;
     public final int MAX_VALUE = Integer.MAX_VALUE;
-    public static final String[] SORT_TYPES = {"Insertion", "Bubble", "Selection", "Cocktail"};
+    public static final String[] SORT_TYPES = {"insertion", "bubble", "selection", "cocktail"};
+    public String type;
     protected Item[] items;
     private int maxValue;
 
@@ -18,13 +20,16 @@ public abstract class Sorter
      * 
      * @param quantity the number of items to create
      * @param maxValue the upperBound for the values of the items
+     * @param type default sort type
      * @throws IllegalArgumentException if quantity or maxValue are invalid values
      */
-    public Sorter(int quantity, int maxValue)
+    public Sorter(int quantity, int maxValue, String type)
     {
         //throw IllegalArgumentExeptions
         if(quantity <= 0 || quantity > MAX_QUANTITY){throw new IllegalArgumentException("Quantity must be greater than 0 and less than " + MAX_QUANTITY);}
         if(maxValue <= 0 || maxValue > MAX_VALUE){throw new IllegalArgumentException("Quantity must be greater than 0 and less than " + MAX_VALUE);}
+        this.type = type;
+        if(!isValidType()){throw new IllegalArgumentException("Invalid Type");}
         //initialize instance variables
         this.maxValue = maxValue;
         //initialize items
@@ -36,7 +41,10 @@ public abstract class Sorter
         }
     }
 
-    //Accesser methods
+    /*
+     * Accessor methods
+     */
+
     /**
      * returns items array
      * 
@@ -67,6 +75,18 @@ public abstract class Sorter
         return this.maxValue;
     }
 
+    /*
+     * returns false if type is not valid
+     */
+    private boolean isValidType()
+    {
+        for(String value : SORT_TYPES)
+        {
+            if(value.equals(type)){return true;}
+        }
+        return false;
+    }
+
     /**
      * returns a String representation of the item array in the form of a String representation of each item followed by a new line character with the exception of the last item
      * 
@@ -82,18 +102,9 @@ public abstract class Sorter
         return output.substring(0, output.length() - 1);
     }
 
-    //Mutator Methods
-    /**
-     * Sort the items array using the method described by the class
+    /*
+     * Mutator methods
      */
-    public abstract void sort();
-
-    /**
-     * Sort the items array using the method described by the class and updates the corrisponding GUI object
-     * 
-     * @param gui GUI to update
-     */
-    public abstract void sort(GUI gui);
 
     /**
      * Shuffles items array using the Fisher-Yates algorithm
@@ -167,5 +178,192 @@ public abstract class Sorter
             }
             items[newIndex] = item;
         }
+    }
+
+    /*
+     * Sort Methods
+     */
+
+    public void sort(GUI gui)
+    {
+        if(gui == null)
+        {
+            gui = new GhostGUI();
+        }
+
+        Method method = null;
+        try
+        {
+            Class<?> c = Class.forName("Sorter");
+            method = c.getDeclaredMethod(type + "Sort", GUI.class);
+        }
+        catch(SecurityException e){}
+        catch(NoSuchMethodException e){}
+        catch(ClassNotFoundException e){}
+        sortInvoke(gui, method);
+    }
+
+    private void sortInvoke(GUI gui, java.lang.reflect.Method method)
+    {
+        try
+        {
+            method.invoke(this, gui);
+        }
+        catch(IllegalArgumentException e){}
+        catch(IllegalAccessException e){}
+        catch(java.lang.reflect.InvocationTargetException e){}
+    }
+
+    /**
+     * Find out of place item, then insert it into correct position
+     */
+    private void insertionSort(GUI gui)
+    {
+        //for each item
+        for(int i = 1; i < items.length; i++)
+        {
+            int j = i - 1;
+            //while the previous item is greater than the current item and j is an index, decrement j
+            while(j != -1 && items[i].getValue() < items[j].getValue())
+            {
+                gui.setSelector(j);
+                j--;
+            }
+            //if j changed, move item at i to j + 1
+            if(j != i - 1)
+            {
+                this.move(i, j + 1);
+                gui.updateBars();
+            }
+            //check for abortFlag
+            if(gui.getAbortFlag()){gui.abort(); return;}
+        }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
+    }
+
+    /**
+     * Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in wrong order.
+     */
+    private void bubbleSort(GUI gui)
+    {
+        boolean sorted = false;
+        while(!sorted)
+        {
+            sorted = true;
+            //for each item pair
+            for(int i = 0; i < this.items.length - 1; i++)
+            {
+                gui.setSelector(i);
+                //if items are not in order, swap them and update sorted
+                if(this.items[i].getValue() > this.items[i + 1].getValue())
+                {
+                    Item temp = this.items[i];
+                    this.items[i] = this.items[i + 1];
+                    this.items[i + 1] = temp;
+                    sorted = false;
+                    gui.updateBars();
+                }
+                //check for abortFlag
+                if(gui.getAbortFlag()){gui.abort(); return;}
+            }
+        }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
+    }
+
+    /**
+     * The selection sort algorithm sorts an array by repeatedly finding the minimum element (considering ascending order) from unsorted part and putting it at the beginning.
+     */
+    private void selectionSort(GUI gui)
+    {
+        //for each item
+        for(int i = 0; i < items.length; i++)
+        {
+            gui.setSelector(i);
+            //initialize minimums
+            double minValue = items[i].getValue();
+            int minIndex = i;
+            //for each unsorted item
+            for(int j = i + 1; j < items.length; j++)
+            {
+                gui.setSelector(j);
+                //update min value if item j is smaller
+                if(items[j].getValue() < minValue)
+                {
+                    minValue = items[j].getValue();
+                    minIndex = j;
+                }
+            }
+            //move min item to i
+            this.move(minIndex, i);
+            gui.updateBars();
+            //check for abortFlag
+            if(gui.getAbortFlag()){gui.abort(); return;}
+        }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
+    }
+
+    /**
+     * Each iteration of the algorithm is broken up into 2 stages:
+     * 
+     * The first stage loops through the array from left to right, just like the Bubble Sort. 
+     * During the loop, adjacent items are compared and if value on the left is greater than the value on the right, then values are swapped. 
+     * At the end of first iteration, largest number will reside at the end of the array.
+     * 
+     * The second stage loops through the array in opposite direction- starting from the item just before the most recently sorted item, and moving back to the start of the array. 
+     * Here also, adjacent items are compared and are swapped if required.
+     */
+    private void cocktailSort(GUI gui)
+    {
+        boolean sorted = false;
+        int start = 0;
+        int end = this.items.length - 1;
+
+        while(!sorted)
+        {
+            sorted = true;
+            //forward pass
+            for(int i = start; i < end; i++)
+            {
+                gui.setSelector(i);
+                //if items are not in order, swap them and update sorted
+                if(this.items[i].getValue() > this.items[i + 1].getValue())
+                {
+                    Item temp = this.items[i];
+                    this.items[i] = this.items[i + 1];
+                    this.items[i + 1] = temp;
+                    sorted = false;
+                    gui.updateBars();
+                }
+                //check for abortFlag
+                if(gui.getAbortFlag()){gui.abort(); return;}
+            }
+            //end if sorted flag was not set
+            if(sorted){return;}
+            //decrease end
+            end--;
+            //reverse pass
+            for(int i = end - 1; i >= start; i--)
+            {
+                gui.setSelector(i);
+                //if items are not in order, swap them and update sorted
+                if(this.items[i].getValue() > this.items[i + 1].getValue())
+                {
+                    Item temp = this.items[i];
+                    this.items[i] = this.items[i + 1];
+                    this.items[i + 1] = temp;
+                    sorted = false;
+                    gui.updateBars();
+                }
+                //check for abortFlag
+                if(gui.getAbortFlag()){gui.abort(); return;}
+            }
+            //increase start
+            start++;
+        }
+        //indicate to gui that process has ended
+        gui.toggleProcess();
     }
 }

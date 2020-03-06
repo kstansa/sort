@@ -161,33 +161,6 @@ public class GUI extends JFrame
         );
     }
 
-    /**
-     * generates the sort object of the specified type with the specified quantity and maxValue
-     */
-    private static Sorter generate(String t, int q, int mV)
-    {
-        if(t.equals(SORT_TYPES[0]))
-        {
-            return new Insertion(q, mV);
-        }
-        else if(t.equals(SORT_TYPES[1]))
-        {
-            return new Bubble(q, mV);
-        }
-        else if(t.equals(SORT_TYPES[2]))
-        {
-            return new Selection(q, mV);
-        }
-        else if(t.equals(SORT_TYPES[3]))
-        {
-            return new Cocktail(q, mV);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Invalid Type");
-        }
-    }
-
     public boolean getAbortFlag()
     {
         return abortFlag;
@@ -235,6 +208,8 @@ public class GUI extends JFrame
 
             //combo box for types
             sortTypes = new JComboBox(SORT_TYPES);
+            sortTypes.setActionCommand("type_change");
+            sortTypes.addActionListener(this);
 
             //create number format
             numberFormat = NumberFormat.getIntegerInstance();
@@ -249,7 +224,7 @@ public class GUI extends JFrame
             quantityBox.setValue(DEFAULT_QUANTITY);
 
             quantityReset = new JButton("reset");
-            quantityReset.setActionCommand("rq");
+            quantityReset.setActionCommand("reset_quantity");
             quantityReset.addActionListener(this);
 
             maxValueBox = new JFormattedTextField(formatter);
@@ -257,27 +232,27 @@ public class GUI extends JFrame
             maxValueBox.setValue(DEFAULT_MAX_VALUE);
 
             maxValueReset = new JButton("reset");
-            maxValueReset.setActionCommand("rmv");
+            maxValueReset.setActionCommand("reset_max_value");
             maxValueReset.addActionListener(this);
 
             //generate button
             generateButton = new JButton("generate");
-            generateButton.setActionCommand("g");
+            generateButton.setActionCommand("generate");
             generateButton.addActionListener(this);
             //shuffle button
             shuffleButton = new JButton("shuffle");
             shuffleButton.setEnabled(false);
-            shuffleButton.setActionCommand("sh");
+            shuffleButton.setActionCommand("shuffle");
             shuffleButton.addActionListener(this);
             //sort button
             sortButton = new JButton("sort");
             sortButton.setEnabled(false);
-            sortButton.setActionCommand("s");
+            sortButton.setActionCommand("sort");
             sortButton.addActionListener(this);
             //abort button
             abortButton = new JButton("abort");
             abortButton.setEnabled(false);
-            abortButton.setActionCommand("a");
+            abortButton.setActionCommand("abort");
             abortButton.addActionListener(this);
 
             /*
@@ -432,16 +407,16 @@ public class GUI extends JFrame
 
             public void run()
             {
-                if(command.equals("rq"))
+                if(command.equals("reset_quantity"))
                 {
                     quantityBox.setValue(DEFAULT_QUANTITY);
                 }
 
-                else if(command.equals("rmv"))
+                else if(command.equals("reset_max_value"))
                 {
                     maxValueBox.setValue(DEFAULT_MAX_VALUE);
                 }
-                else if(command.equals("g"))
+                else if(command.equals("generate"))
                 {
                     //TODO inform user of bounds violation
                     int q = Integer.parseInt(quantityBox.getText());
@@ -452,24 +427,31 @@ public class GUI extends JFrame
                         return;
                     }
                     String t = (String)sortTypes.getSelectedItem();
-                    sorter = generate(t, q, mV);
+                    sorter = new Sorter(q, mV, t);
                     shuffleButton.setEnabled(true);
                     sortButton.setEnabled(true);
                     graphicGeneration();
                 }
-                else if(command.equals("sh"))
+                else if(command.equals("shuffle"))
                 {
                     toggleProcess();
                     sorter.shuffle(GUI.this);
                 }
-                else if(command.equals("s"))
+                else if(command.equals("sort"))
                 {
                     toggleProcess();
                     sorter.sort(GUI.this);
                 }
-                else if(command.equals("a"))
+                else if(command.equals("abort"))
                 {
                     abortFlag = true;
+                }
+                else if(command.equals("type_change"))
+                {
+                    if(sorter != null)
+                    {
+                        sorter.type = (String)sortTypes.getSelectedItem();
+                    }
                 }
                 else
                 {
