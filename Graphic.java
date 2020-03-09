@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @version v1.0.0
  */
 //JLabel <-- ImageIcon <-- BufferedImage (which is subclass of image)
-public class Graphic extends JLabel
+public class Graphic extends JPanel
 {
     //Numeric constants
     private final double EPSILON = 0.001;
@@ -18,14 +18,16 @@ public class Graphic extends JLabel
     private final Color BARS = Color.GRAY;
     private final Color BACKGROUND = Color.WHITE;
     private final Color SELECTOR = Color.RED;
-    private final Color GRAY = Color.GRAY;
     //instance vars
     private Sorter sorter;
     private Item[] displayedArr;
     private Item[] currentArr;
-    private int selectorIndex = 0;
     private CustomImage image;
+    private SelectorImage selectorImage;
     private Image scaledImage;
+    private Image scaledSelector;
+    private JLabel imageLabel;
+    private JLabel selectorLabel;
     public int width = 500;
     public int height = 250;
 
@@ -37,13 +39,16 @@ public class Graphic extends JLabel
     public Graphic(Sorter sorter)
     {
         //JLabel constructor
-        super(new ImageIcon());
+        super();
+        imageLabel = new JLabel(new ImageIcon());
+        selectorLabel = new JLabel(new ImageIcon());
 
         //set fields
         this.sorter = sorter;
 
         //create CustomImage object
         image = new CustomImage(sorter.getQuantity(), sorter.getMaxValue());
+        selectorImage = new SelectorImage(sorter.getQuantity());
 
         //perform first write of sorter data
         initialWrite();
@@ -58,18 +63,18 @@ public class Graphic extends JLabel
         //set displayed arr
         displayedArr = sorter.getItems().clone();
 
-        //paint background
-        image.paintAllPixels(BACKGROUND);
-
         //for each item
         for(int i = 0; i < sorter.getQuantity(); i++)
         {
             //paint bar
-            image.paintColumnTo(i, (int)(displayedArr[i].getValue()), BARS);
+            image.paintBar(i, (int)(displayedArr[i].getValue()));
         }
 
+        add(selectorLabel);
+        add(imageLabel);
+
         //update display
-        updateDisplay();
+        updateBoth();
     }
 
     /**
@@ -79,16 +84,8 @@ public class Graphic extends JLabel
      */
     public void setSelector(int index)
     {
-        //         //repaint old nub
-        //         image.paintNub(selectorIndex, BACKGROUND);
-        //         //image.paintColumnTo(selectorIndex, (int)(displayedArr[selectorIndex].getValue()), BARS);
-        // 
-        //         //paint in new selector
-        //         image.paintNub(index, SELECTOR);
-        //         selectorIndex = index;
-        // 
-        //         //update display
-        //         updateDisplay();
+        selectorImage.setSelector(index);
+        updateSelector();
     }
 
     /**
@@ -105,23 +102,39 @@ public class Graphic extends JLabel
         //update bars at specified indexes
         for(int index : diffIndexes)
         {
-            image.paintColumn(index, BACKGROUND);
-            image.paintColumnTo(index, (int)(displayedArr[index].getValue()), BARS);
+            image.paintColumn(index);
+            image.paintBar(index, (int)(displayedArr[index].getValue()));
         }
 
         //update display
-        updateDisplay();
+        updateImage();
     }
 
     /**
      * Updates the label container to match the current image.
      */
-    public void updateDisplay()
+    public void updateImage()
     {
         //create scaled version of image
         scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
         //update label icon
-        setIcon(new ImageIcon(scaledImage));
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+    }
+
+    public void updateSelector()
+    {
+        scaledSelector = selectorImage.getScaledInstance(width, 5, Image.SCALE_DEFAULT);
+        selectorLabel.setIcon(new ImageIcon(scaledSelector));
+    }
+
+    public void updateBoth()
+    {
+        //create scaled version of image
+        scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+        scaledSelector = selectorImage.getScaledInstance(width, 5, Image.SCALE_DEFAULT);
+        //update label icon
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+        selectorLabel.setIcon(new ImageIcon(scaledSelector));
     }
 
     /**
@@ -146,5 +159,119 @@ public class Graphic extends JLabel
             output[i] = indexList.get(i);
         }
         return output;
+    }
+
+    /**
+     * Class CustomImage - extends BufferedImage to include more comprehensive painting tools
+     * 
+     * @author Liam Geyer
+     * @version v1.0.0
+     */
+    private class CustomImage extends BufferedImage
+    {
+        /**
+         * default constructor
+         * 
+         * @param width image width
+         * @param height image height
+         */
+        public CustomImage(int width, int height)
+        {
+            super(width, height, BufferedImage.TYPE_INT_RGB);
+            paintBackground();
+        }
+
+        /**
+         * set the color in the picture to the background color
+         * 
+         * @param color the color to set to
+         */
+        public void paintBackground()
+        {
+            //get color int
+            int colorInt = BACKGROUND.getRGB();
+            //loop through all x
+            for (int x = 0; x < this.getWidth(); x++)
+            {
+                //loop through all y
+                for (int y = 0; y < this.getHeight(); y++)
+                {
+                    setRGB(x, y, colorInt);
+                }
+            }
+        }
+
+        /**
+         * paints column
+         * 
+         * @param columnIndex x coord of the column
+         * @param color color to paint column
+         */
+        public void paintColumn(int columnIndex)
+        {
+            //get color int
+            int colorInt = BACKGROUND.getRGB();
+            //for each y coord
+            for(int y = 0; y < this.getHeight(); y++)
+            {
+                setRGB(columnIndex, y, colorInt);
+            }
+        }
+
+        /**
+         * paints column from bottom to specified height
+         * 
+         * @param columnIndex x coord of the column
+         * @param height height to paint column
+         * @param color color to paint column
+         */
+        public void paintBar(int columnIndex, int height)
+        {
+            //get color int
+            int colorInt = BARS.getRGB();
+            //for each y coord starting from bottom to param height
+            for(int y = this.getHeight() - 1; y >= this.getHeight() - height; y--)
+            {
+                setRGB(columnIndex, y, colorInt);
+            }
+        }
+    }
+
+    /**
+     * Class SelectorImage -
+     * 
+     * @author Liam Geyer
+     * @version v1.0.0
+     */
+    private class SelectorImage extends BufferedImage
+    {
+        private int selectorIndex;
+
+        public SelectorImage(int length)
+        {
+            super(length, 1, BufferedImage.TYPE_INT_RGB);
+            //paint background
+            paintBackground();
+            //set first selector position
+            selectorIndex = 0;
+        }
+
+        public void paintBackground()
+        {
+            //get color int
+            int colorInt = BACKGROUND.getRGB();
+            //loop through all x
+            for(int x = 0; x < this.getWidth(); x++)
+            {
+                setRGB(x, 0, colorInt);
+            }
+        }
+
+        public void setSelector(int index)
+        {
+            setRGB(selectorIndex, 0, BACKGROUND.getRGB());
+            selectorIndex = index;
+            setRGB(selectorIndex, 0, SELECTOR.getRGB());
+        }
     }
 }

@@ -129,7 +129,17 @@ public class GUI extends JFrame
      */
     public void setSelector(int index)
     {
-        graphic.setSelector(index);
+        final int INDEX = index;
+        javax.swing.SwingUtilities.invokeLater
+        (
+            new Runnable()
+            {
+                public void run()
+                {
+                    graphic.setSelector(INDEX);
+                }
+            }
+        );
     }
 
     /**
@@ -145,7 +155,7 @@ public class GUI extends JFrame
         graphicsPanel.add(graphic);
         graphic.width = graphicsPanel.getWidth();
         graphic.height = graphicsPanel.getHeight();
-        graphic.updateDisplay();
+        graphic.updateBoth();
         //keeps graphic at the same size as the panel
         graphicsPanel.addComponentListener
         (
@@ -155,7 +165,7 @@ public class GUI extends JFrame
                 {
                     graphic.width = graphicsPanel.getWidth();
                     graphic.height = graphicsPanel.getHeight();
-                    graphic.updateDisplay();
+                    graphic.updateBoth();
                 }
             }
         );
@@ -187,6 +197,7 @@ public class GUI extends JFrame
         private NumberFormat numberFormat;
         private JFormattedTextField quantityBox;
         private JFormattedTextField maxValueBox;
+        private JFormattedTextField delayBox;
         private JButton quantityReset;
         private JButton maxValueReset;
         private JButton generateButton;
@@ -254,6 +265,13 @@ public class GUI extends JFrame
             abortButton.setEnabled(false);
             abortButton.setActionCommand("abort");
             abortButton.addActionListener(this);
+
+            //delay text box
+            //             delayBox = new JFormattedTextField(formatter);
+            //             delayBox.setColumns(10);
+            //             delayBox.setValue(0);
+            //             delayBox.setActionCommand("change_delay");
+            //             delayBox.addActionListener(this);
 
             /*
              * add all components to panel
@@ -355,6 +373,13 @@ public class GUI extends JFrame
             gridBag.setConstraints(abortButton, constraints);
             add(abortButton);
 
+            /*
+             * New Line
+             */
+
+            //add delay box
+            //             gridBag.setConstraints(delayBox, constraints);
+            //             add(delayBox);
             //Set panel size
             //setPreferredSize(new Dimension(500, 250));
         }

@@ -1,4 +1,5 @@
 import java.lang.reflect.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract class Sorter - describes an array of items to be sorted
@@ -14,6 +15,7 @@ public class Sorter
     public String type;
     protected Item[] items;
     private int maxValue;
+    public long delay = 0;
 
     /**
      * Constructor for sorter
@@ -102,6 +104,18 @@ public class Sorter
         return output.substring(0, output.length() - 1);
     }
 
+    private void pause()
+    {
+        //         try
+        //         {
+        //             TimeUnit.MILLISECONDS.sleep(delay);
+        //         }
+        //         catch(InterruptedException e)
+        //         {
+        //             e.printStackTrace();
+        //         }
+    }
+
     /*
      * Mutator methods
      */
@@ -184,6 +198,9 @@ public class Sorter
      * Sort Methods
      */
 
+    /**
+     * sorts the sorter object using the algorithm defined by type and updates the param gui's graphic
+     */
     public void sort(GUI gui)
     {
         if(gui == null)
@@ -197,21 +214,16 @@ public class Sorter
             Class<?> c = Class.forName("Sorter");
             method = c.getDeclaredMethod(type + "Sort", GUI.class);
         }
-        catch(SecurityException e){}
-        catch(NoSuchMethodException e){}
-        catch(ClassNotFoundException e){}
-        sortInvoke(gui, method);
-    }
-
-    private void sortInvoke(GUI gui, java.lang.reflect.Method method)
-    {
+        catch(SecurityException e){e.printStackTrace();}
+        catch(NoSuchMethodException e){e.printStackTrace();}
+        catch(ClassNotFoundException e){e.printStackTrace();}
         try
         {
             method.invoke(this, gui);
         }
-        catch(IllegalArgumentException e){}
-        catch(IllegalAccessException e){}
-        catch(java.lang.reflect.InvocationTargetException e){}
+        catch(IllegalArgumentException e){e.printStackTrace();}
+        catch(IllegalAccessException e){e.printStackTrace();}
+        catch(InvocationTargetException e){e.printStackTrace();}
     }
 
     /**
@@ -227,6 +239,7 @@ public class Sorter
             while(j != -1 && items[i].getValue() < items[j].getValue())
             {
                 gui.setSelector(j);
+                pause();
                 j--;
             }
             //if j changed, move item at i to j + 1
