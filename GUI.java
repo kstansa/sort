@@ -24,11 +24,11 @@ public class GUI extends JFrame
     private final int DEFAULT_MAX_VALUE = 1000;
     private final int MAX_QUANTITY = 10000;
     private final int MAX_MAX_VALUE = 10000;
-    private JLabel threadCount = new JLabel("text", JLabel.CENTER);
-    private JTextArea threadList = new JTextArea("");
-    private JTextArea sysOut = new JTextArea("");
-    private boolean processFlag = false;
-    private boolean abortFlag = false;
+    private JLabel threadCount;
+    private JTextArea threadList;
+    private JTextArea sysOut;
+    private boolean processFlag;
+    private boolean abortFlag;
     private boolean devFlag;
     private boolean verbFlag;
 
@@ -40,7 +40,7 @@ public class GUI extends JFrame
     private Sorter sorter;
 
     /**
-     * default constructor for GUI. Constructs with all params false
+     * Default constructor for GUI. Constructs with all params false
      */
     public GUI()
     {
@@ -48,7 +48,7 @@ public class GUI extends JFrame
     }
 
     /**
-     * sole constructor for the GUI object
+     * Constructor containing flags for debug and verb windows
      * 
      * @param devFlag set true to enable the dev windows
      * @param verbFlag set true to enable verbose mode
@@ -58,17 +58,22 @@ public class GUI extends JFrame
         super("Sort Demos");
         this.devFlag = devFlag;
         this.verbFlag = verbFlag;
+        this.processFlag = false;
+        this.abortFlag = false;
+
         //create thread counter if dev mode
         if(devFlag)
         {
+            threadCount = new JLabel("", JLabel.CENTER);
+            threadList = new JTextArea("");
             threadList.setLineWrap(true);
+            threadList.setEditable(false);
             ThreadCounterRunnable tCRunnable = new ThreadCounterRunnable();
             Thread tCThread = new Thread(tCRunnable);
             tCThread.setName("thread-info-listener");
             tCThread.start();
         }
-
-        //TODO Sizing/proper defaults
+        
         //create panels
         generateGraphics();
         generationPanel = new GenerationPanel();
@@ -81,10 +86,17 @@ public class GUI extends JFrame
         if(devFlag)
         {
             tempPane.add(threadList, BorderLayout.CENTER);
-            if(verbFlag){tempPane.add(sysOut, BorderLayout.LINE_END);}
+            if(verbFlag)
+            {
+                sysOut = new JTextArea("");
+                sysOut.setEditable(false);
+                tempPane.add(sysOut, BorderLayout.LINE_END);
+            }
         }
         else if(verbFlag)
         {
+            sysOut = new JTextArea("");
+            sysOut.setEditable(false);
             tempPane.add(sysOut, BorderLayout.CENTER);
         }
         if(verbFlag)
@@ -104,9 +116,19 @@ public class GUI extends JFrame
         setVisible(true);
     }
 
+    /**
+     * Constructor that does nothing. Used by the GhostGUI
+     * 
+     * @param GhostFlag exists to differentiate from other constructors. value of GhostFlag has no effect on the constructor
+     */
+    protected GUI(boolean GhostFlag)
+    {
+        //does nothing
+    }
+
     //graphics events
     /**
-     * generates the graphics panel
+     * Generates the graphics panel
      */
     private void generateGraphics()
     {
@@ -117,7 +139,7 @@ public class GUI extends JFrame
     }
 
     /**
-     * calls updateBars for the contained graphic object
+     * Calls updateBars for the contained graphic object
      */
     public void updateBars()
     {
@@ -125,7 +147,9 @@ public class GUI extends JFrame
     }
 
     /**
-     * calls setSelector for the contained graphic object
+     * Calls setSelector for the contained graphic object
+     * 
+     * @param index index to set selector to
      */
     public void setSelector(int index)
     {
@@ -143,7 +167,7 @@ public class GUI extends JFrame
     }
 
     /**
-     * generate and add graphic to graphics panel
+     * Generate and add graphic to graphics panel
      */
     private void graphicGeneration()
     {
@@ -171,17 +195,27 @@ public class GUI extends JFrame
         );
     }
 
+    /**
+     * Returns the state of the abort flag, which indicates if the current process has been requested to abort
+     * @return the abort flag
+     */
     public boolean getAbortFlag()
     {
         return abortFlag;
     }
 
     //public generationPanel methods
+    /**
+     * Lets the GUI know that a process has either begun or ended
+     */
     public void toggleProcess()
     {
         generationPanel.toggleProcess();
     }
 
+    /**
+     * Lets the GUI know that the current process has been aborted
+     */
     public void abort()
     {
         abortFlag = false;
@@ -421,6 +455,9 @@ public class GUI extends JFrame
             thread.start();
         }
 
+        /**
+         * Runnable for GUI actions
+         */
         private class GUIActionRunnable implements Runnable
         {
             private String command;
@@ -444,15 +481,17 @@ public class GUI extends JFrame
                 else if(command.equals("generate"))
                 {
                     //TODO inform user of bounds violation
-                    int q = Integer.parseInt(quantityBox.getText());
-                    int mV = Integer.parseInt(maxValueBox.getText());
+                    int quantity = Integer.parseInt(quantityBox.getText());
+                    int maxValue = Integer.parseInt(maxValueBox.getText());
                     //end if vars are out of bounds
-                    if(q < 1 || mV < 1 || q > MAX_QUANTITY || mV > MAX_MAX_VALUE)
+                    if(quantity < 1 || maxValue < 1 || quantity > MAX_QUANTITY || maxValue > MAX_MAX_VALUE)
                     {
+                        System.err.print("oh no");
                         return;
                     }
-                    String t = (String)sortTypes.getSelectedItem();
-                    sorter = new Sorter(q, mV, t);
+                    String type = (String)sortTypes.getSelectedItem();
+                    sorter = new Sorter(quantity, maxValue, type);
+                    sorter.setGUI(GUI.this);
                     shuffleButton.setEnabled(true);
                     sortButton.setEnabled(true);
                     graphicGeneration();
@@ -460,12 +499,12 @@ public class GUI extends JFrame
                 else if(command.equals("shuffle"))
                 {
                     toggleProcess();
-                    sorter.shuffle(GUI.this);
+                    sorter.shuffle();
                 }
                 else if(command.equals("sort"))
                 {
                     toggleProcess();
-                    sorter.sort(GUI.this);
+                    sorter.sort();
                 }
                 else if(command.equals("abort"))
                 {
@@ -486,6 +525,9 @@ public class GUI extends JFrame
         }
     }
 
+    /**
+     * Runnable for keeping the thread counter and list up to date
+     */
     private class ThreadCounterRunnable implements Runnable
     {
         public void run()
@@ -500,6 +542,9 @@ public class GUI extends JFrame
         }
     }
 
+    /**
+     * Changes System.out to the parameter text area
+     */
     private class CustomOutputStream extends OutputStream
     {
         private JTextArea textArea;

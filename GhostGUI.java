@@ -9,7 +9,7 @@ public class GhostGUI extends GUI
 {
     public GhostGUI()
     {
-        super();
+        super(true);
     }
     public void updateBars(){}
     public void setSelector(int index){}

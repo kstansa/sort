@@ -14,6 +14,7 @@ public class Sorter
     public static final String[] SORT_TYPES = {"insertion", "bubble", "selection", "cocktail"};
     public String type;
     protected Item[] items;
+    private GUI gui;
     private int maxValue;
     public long delay = 0;
 
@@ -23,6 +24,7 @@ public class Sorter
      * @param quantity the number of items to create
      * @param maxValue the upperBound for the values of the items
      * @param type default sort type
+     * @param gui GUI that methods update. Set to a GhostGUI if set to null
      * @throws IllegalArgumentException if quantity or maxValue are invalid values
      */
     public Sorter(int quantity, int maxValue, String type)
@@ -34,6 +36,7 @@ public class Sorter
         if(!isValidType()){throw new IllegalArgumentException("Invalid Type");}
         //initialize instance variables
         this.maxValue = maxValue;
+        this.gui = new GhostGUI();
         //initialize items
         this.items = new Item[quantity];
         //fill items
@@ -77,8 +80,10 @@ public class Sorter
         return this.maxValue;
     }
 
-    /*
+    /**
      * returns false if type is not valid
+     * 
+     * @return false if type is not valid
      */
     private boolean isValidType()
     {
@@ -104,6 +109,9 @@ public class Sorter
         return output.substring(0, output.length() - 1);
     }
 
+    /**
+     * pauses a process for the amount of time specified by delay
+     */
     private void pause()
     {
         //         try
@@ -121,27 +129,23 @@ public class Sorter
      */
 
     /**
+     * Sets the active gui
+     * 
+     * @param gui GUI to set the gui to
+     */
+    public void setGUI(GUI gui)
+    {
+        if(gui == null)
+        {
+            this.gui = new GhostGUI();
+        }
+        this.gui = gui;
+    }
+    
+    /**
      * Shuffles items array using the Fisher-Yates algorithm
      */
     public void shuffle()
-    {
-        //for all but the first item
-        for(int i = items.length - 1; i > 0; i--)
-        {
-            //generate a random index
-            int j = (int)(Math.random() * (i + 1));
-            Item temp = items[i];
-            items[i] = items[j];
-            items[j] = temp;
-        }
-    }
-
-    /**
-     * Shuffles items array using the Fisher-Yates algorithm and updates the corrisponding GUI
-     * 
-     * @param gui GUI to update
-     */
-    public void shuffle(GUI gui)
     {
         //for all but the first item
         for(int i = items.length - 1; i > 0; i--)
@@ -167,7 +171,7 @@ public class Sorter
      * @param newIndex index to move item to
      * @throws ArrayIndexOutOfBoundsException if either index or newIndex are invalid indexes
      */
-    protected void move(int index, int newIndex)
+    private void move(int index, int newIndex)
     {
         //do nothing if index and newIndex are the same
         if(index == newIndex){return;}
@@ -194,32 +198,23 @@ public class Sorter
         }
     }
 
-    /*
-     * Sort Methods
-     */
-
     /**
      * sorts the sorter object using the algorithm defined by type and updates the param gui's graphic
      */
-    public void sort(GUI gui)
+    public void sort()
     {
-        if(gui == null)
-        {
-            gui = new GhostGUI();
-        }
-
         Method method = null;
         try
         {
             Class<?> c = Class.forName("Sorter");
-            method = c.getDeclaredMethod(type + "Sort", GUI.class);
+            method = c.getDeclaredMethod(type + "Sort");
         }
         catch(SecurityException e){e.printStackTrace();}
         catch(NoSuchMethodException e){e.printStackTrace();}
         catch(ClassNotFoundException e){e.printStackTrace();}
         try
         {
-            method.invoke(this, gui);
+            method.invoke(this);
         }
         catch(IllegalArgumentException e){e.printStackTrace();}
         catch(IllegalAccessException e){e.printStackTrace();}
@@ -229,7 +224,7 @@ public class Sorter
     /**
      * Find out of place item, then insert it into correct position
      */
-    private void insertionSort(GUI gui)
+    private void insertionSort()
     {
         //for each item
         for(int i = 1; i < items.length; i++)
@@ -258,7 +253,7 @@ public class Sorter
     /**
      * Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in wrong order.
      */
-    private void bubbleSort(GUI gui)
+    private void bubbleSort()
     {
         boolean sorted = false;
         while(!sorted)
@@ -288,7 +283,7 @@ public class Sorter
     /**
      * The selection sort algorithm sorts an array by repeatedly finding the minimum element (considering ascending order) from unsorted part and putting it at the beginning.
      */
-    private void selectionSort(GUI gui)
+    private void selectionSort()
     {
         //for each item
         for(int i = 0; i < items.length; i++)
@@ -328,7 +323,7 @@ public class Sorter
      * The second stage loops through the array in opposite direction- starting from the item just before the most recently sorted item, and moving back to the start of the array. 
      * Here also, adjacent items are compared and are swapped if required.
      */
-    private void cocktailSort(GUI gui)
+    private void cocktailSort()
     {
         boolean sorted = false;
         int start = 0;
