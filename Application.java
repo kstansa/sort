@@ -10,6 +10,9 @@ public class Application
     private static boolean devArg = false;
     private static boolean verbArg = false;
     
+    /**
+     * Main method. Called to run application
+     */
     public static void main(String[] args)
     {
         //check args

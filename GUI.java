@@ -111,8 +111,9 @@ public class GUI extends JFrame
 
         //configure frame settings
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //TODO set size to user's display size
         setMinimumSize(new Dimension(500, 500));
+        //start at maximum size
+        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 
@@ -259,12 +260,13 @@ public class GUI extends JFrame
             //create number format
             numberFormat = NumberFormat.getIntegerInstance();
             numberFormat.setGroupingUsed(false);
-            NumberFormatter formatter = new NumberFormatter(numberFormat);
-            formatter.setAllowsInvalid(false);
-            formatter.setCommitsOnValidEdit(true);
 
             //text box and reset button for quantity and max value
-            quantityBox = new JFormattedTextField(formatter);
+            NumberFormatter quantityFormatter = new NumberFormatter(numberFormat);
+            quantityFormatter.setAllowsInvalid(false);
+            quantityFormatter.setCommitsOnValidEdit(true);
+            quantityFormatter.setMaximum(MAX_QUANTITY);
+            quantityBox = new JFormattedTextField(quantityFormatter);
             quantityBox.setColumns(10);
             quantityBox.setValue(DEFAULT_QUANTITY);
 
@@ -272,7 +274,11 @@ public class GUI extends JFrame
             quantityReset.setActionCommand("reset_quantity");
             quantityReset.addActionListener(this);
 
-            maxValueBox = new JFormattedTextField(formatter);
+            NumberFormatter maxValueFormatter = new NumberFormatter(numberFormat);
+            maxValueFormatter.setAllowsInvalid(false);
+            maxValueFormatter.setCommitsOnValidEdit(true);
+            maxValueFormatter.setMaximum(MAX_MAX_VALUE);
+            maxValueBox = new JFormattedTextField(maxValueFormatter);
             maxValueBox.setColumns(10);
             maxValueBox.setValue(DEFAULT_MAX_VALUE);
 
@@ -300,7 +306,7 @@ public class GUI extends JFrame
             abortButton.setActionCommand("abort");
             abortButton.addActionListener(this);
 
-            //delay text box
+            //delay input box
             //             delayBox = new JFormattedTextField(formatter);
             //             delayBox.setColumns(10);
             //             delayBox.setValue(0);

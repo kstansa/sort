@@ -1,14 +1,20 @@
 #BlueJ class context
 comment0.params=
 comment0.target=GhostGUI()
+comment0.text=\r\n\ Sole\ constructor.\ Calls\ the\ GhostGUI\ constructor\ from\ GUI\r\n
 comment1.params=
 comment1.target=void\ updateBars()
+comment1.text=\r\n\ Does\ nothing\r\n
 comment2.params=index
 comment2.target=void\ setSelector(int)
+comment2.text=\r\n\ Does\ nothing\r\n
 comment3.params=
 comment3.target=boolean\ getAbortFlag()
+comment3.text=\r\n\ Returns\ false\ since\ to\ prevent\ methods\ with\ abort\ capabilities\ from\ aborting\ with\ a\ GhostGUI\r\n\ \r\n\ @return\ false\r\n
 comment4.params=
 comment4.target=void\ toggleProcess()
+comment4.text=\r\n\ Does\ nothing\r\n
 comment5.params=
 comment5.target=void\ abort()
+comment5.text=\r\n\ Does\ nothing\r\n
 numComments=6

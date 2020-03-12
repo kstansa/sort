@@ -28,7 +28,13 @@ public class Graphic extends JPanel
     private Image scaledSelector;
     private JLabel imageLabel;
     private JLabel selectorLabel;
+    /**
+     * Width of the main graphic in pixels
+     */
     public int width = 500;
+    /**
+     * Height of the main graphic in pixels
+     */
     public int height = 250;
 
     /**
@@ -89,7 +95,7 @@ public class Graphic extends JPanel
     }
 
     /**
-     * updates the graphic to represent current state of the sorter's array.
+     * Updates the graphic to represent current state of the sorter's array.
      */
     public void updateBars()
     {
@@ -111,7 +117,7 @@ public class Graphic extends JPanel
     }
 
     /**
-     * Updates the label container to match the current image.
+     * Updates the displayed image.
      */
     public void updateImage()
     {
@@ -121,12 +127,18 @@ public class Graphic extends JPanel
         imageLabel.setIcon(new ImageIcon(scaledImage));
     }
 
+    /**
+     * Updates the displayed selector image
+     */
     public void updateSelector()
     {
         scaledSelector = selectorImage.getScaledInstance(width, 5, Image.SCALE_DEFAULT);
         selectorLabel.setIcon(new ImageIcon(scaledSelector));
     }
 
+    /**
+     * Updates both the displayed image and the displayed selector image
+     */
     public void updateBoth()
     {
         //create scaled version of image
