@@ -11,7 +11,7 @@ public class Sorter
 {
     public final int MAX_QUANTITY = Integer.MAX_VALUE;
     public final int MAX_VALUE = Integer.MAX_VALUE;
-    public static final String[] SORT_TYPES = {"insertion", "bubble", "selection", "cocktail"};
+    public static final String[] SORT_TYPES = {"insertion", "bubble", "selection", "cocktail", "merge"};
     public String type;
     protected Item[] items;
     private GUI gui;
@@ -58,6 +58,18 @@ public class Sorter
     public Item[] getItems()
     {
         return this.items;
+    }
+
+    private Item[] getItems(int lowerBound, int upperBound)
+    {
+        Item[] output = new Item[upperBound - lowerBound];
+        int j = 0;
+        for(int i = lowerBound; i < upperBound; i++)
+        {
+            output[j] = items[i];
+            j++;
+        }
+        return output;
     }
 
     /**
@@ -141,7 +153,7 @@ public class Sorter
         }
         this.gui = gui;
     }
-    
+
     /**
      * Shuffles items array using the Fisher-Yates algorithm
      */
@@ -195,6 +207,34 @@ public class Sorter
                 items[i] = items[i + 1];
             }
             items[newIndex] = item;
+        }
+    }
+
+    /**
+     * merge two sub-arrays of items
+     * 
+     * @param lowerBound inclusive
+     * @param midBound exclusive for first sub-array, inclusive for second sub-array
+     * @param upperBoud exclusive
+     */
+    private void merge(int lowerBound, int midBound, int upperBound)
+    {
+        //check that bounds are valid
+        if(upperBound <= midBound || midBound <= lowerBound || lowerBound < 0 || upperBound > getQuantity()){throw new IllegalArgumentException("Invalid bounds");}
+
+        //get indexes of sub-arrays
+        int readIndex = midBound;
+        int writeIndex = lowerBound;
+        while(writeIndex < readIndex && readIndex < upperBound)
+        {
+            gui.setSelector(writeIndex);
+            if(items[readIndex].getValue() < items[writeIndex].getValue())
+            {
+                move(readIndex, writeIndex);
+                readIndex++;
+                gui.updateBars();
+            }
+            writeIndex++;
         }
     }
 
@@ -373,5 +413,32 @@ public class Sorter
         }
         //indicate to gui that process has ended
         gui.toggleProcess();
+    }
+
+    private void mergeSort()
+    {
+        //perform helper for all of items
+        mergeSortHelper(0, getQuantity());
+        //check for abortFlag
+        if(gui.getAbortFlag()){gui.abort(); return;}
+        //indicate to gui that process has ended
+        gui.toggleProcess();
+    }
+
+    private void mergeSortHelper(int lowerBound, int upperBound)
+    {
+        //if given section is longer than 1
+        if(lowerBound < upperBound - 1)
+        {
+            //find mid point
+            int mid = (upperBound + lowerBound)/2;
+
+            //sort both halves
+            mergeSortHelper(lowerBound, mid);
+            mergeSortHelper(mid, upperBound);
+
+            //merge halves
+            merge(lowerBound, mid, upperBound);
+        }
     }
 }
