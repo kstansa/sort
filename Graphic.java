@@ -20,8 +20,8 @@ public class Graphic extends JPanel
     private final Color SELECTOR = Color.RED;
     //instance vars
     private Sorter sorter;
-    private Item[] displayedArr;
-    private Item[] currentArr;
+    private double[] displayedArr;
+    private double[] currentArr;
     private CustomImage image;
     private SelectorImage selectorImage;
     private Image scaledImage;
@@ -67,13 +67,13 @@ public class Graphic extends JPanel
     private void initialWrite()
     {
         //set displayed arr
-        displayedArr = sorter.getItems().clone();
+        displayedArr = sorter.getValues().clone();
 
         //for each item
         for(int i = 0; i < sorter.getQuantity(); i++)
         {
             //paint bar
-            image.paintBar(i, (int)(displayedArr[i].getValue()));
+            image.paintBar(i, (int)displayedArr[i]);
         }
 
         add(selectorLabel);
@@ -109,7 +109,7 @@ public class Graphic extends JPanel
         for(int index : diffIndexes)
         {
             image.paintColumn(index);
-            image.paintBar(index, (int)(displayedArr[index].getValue()));
+            image.paintBar(index, (int)displayedArr[index]);
         }
 
         //update display
@@ -156,11 +156,11 @@ public class Graphic extends JPanel
      */
     private int[] findDifferences()
     {
-        currentArr = sorter.getItems().clone();
+        currentArr = sorter.getValues().clone();
         ArrayList<Integer> indexList = new ArrayList<Integer>();
         for(int i = 0; i < currentArr.length; i++)
         {
-            if(Math.abs(displayedArr[i].getValue() - currentArr[i].getValue()) > EPSILON)
+            if(Math.abs(displayedArr[i] - currentArr[i]) > EPSILON)
             {
                 indexList.add(new Integer(i));
             }

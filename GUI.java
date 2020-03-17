@@ -73,7 +73,7 @@ public class GUI extends JFrame
             tCThread.setName("thread-info-listener");
             tCThread.start();
         }
-        
+
         //create panels
         generateGraphics();
         generationPanel = new GenerationPanel();
@@ -539,7 +539,7 @@ public class GUI extends JFrame
         public void run()
         {
             ThreadGroup currentTG = Thread.currentThread().getThreadGroup();
-            while(true)
+            while(devFlag)
             {
                 threadCount.setText("Thread Count for Thread Group " + currentTG.getName() + ": " + currentTG.activeCount());
                 Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
