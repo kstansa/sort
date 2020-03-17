@@ -221,6 +221,8 @@ public class Sorter
     {
         //check that bounds are valid
         if(upperBound <= midBound || midBound <= lowerBound || lowerBound < 0 || upperBound > getQuantity()){throw new IllegalArgumentException("Invalid bounds");}
+        //check for abort
+        if(gui.getAbortFlag()){return;}
 
         //get indexes of sub-arrays
         int readIndex = midBound;
@@ -235,6 +237,8 @@ public class Sorter
                 gui.updateBars();
             }
             writeIndex++;
+            //check for abort
+            if(gui.getAbortFlag()){return;}
         }
     }
 
@@ -427,8 +431,8 @@ public class Sorter
 
     private void mergeSortHelper(int lowerBound, int upperBound)
     {
-        //if given section is longer than 1
-        if(lowerBound < upperBound - 1)
+        //if given section is longer than 1 and the process has not been aborted
+        if(!gui.getAbortFlag() && lowerBound < upperBound - 1)
         {
             //find mid point
             int mid = (upperBound + lowerBound)/2;
