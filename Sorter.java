@@ -13,7 +13,7 @@ public class Sorter
     public final int MAX_VALUE = Integer.MAX_VALUE;
     public static final String[] SORT_TYPES = {"insertion", "bubble", "selection", "cocktail", "merge"};
     public String type;
-    public double[] values;
+    private ValuesArray values;
     private GUI gui;
     private int maxValue;
     public long delay = 0;
@@ -38,12 +38,7 @@ public class Sorter
         this.maxValue = maxValue;
         gui = new GhostGUI();
         //initialize values
-        values = new double[quantity];
-        //fill values
-        for(int i = 0; i < quantity; i++)
-        {
-            values[i] = Math.random() * maxValue;
-        }
+        values = new ValuesArray(quantity, maxValue);
     }
 
     /*
@@ -55,9 +50,9 @@ public class Sorter
      * 
      * @return valuess array
      */
-    public double[] getValues()
+    public double[] cloneValues()
     {
-        return values;
+        return values.getArray();
     }
 
     /**
@@ -65,9 +60,9 @@ public class Sorter
      * 
      * @return number of values in values array
      */
-    public int getQuantity()
+    public int size()
     {
-        return values.length;
+        return values.size();
     }
 
     /**
@@ -101,12 +96,7 @@ public class Sorter
      */
     public String toString()
     {
-        String output = "";
-        for(double value : values)
-        {
-            output += "value:\t" + value + "\n";
-        }
-        return output.substring(0, output.length() - 1);
+        return "Type:\t" + type + "\n" + values.toString();
     }
 
     /**
@@ -148,54 +138,18 @@ public class Sorter
     public void shuffle()
     {
         //for all but the first item
-        for(int i = getQuantity() - 1; i > 0; i--)
+        for(int i = size() - 1; i > 0; i--)
         {
             gui.setSelector(i);
             //generate a random index
             int j = (int)(Math.random() * (i + 1));
-            double temp = values[i];
-            values[i] = values[j];
-            values[j] = temp;
+            values.swap(i, j);
             gui.updateBars();
             //check for abortFlag
             if(gui.getAbortFlag()){gui.abort(); return;}
         }
         //indicate to gui that process has ended
         gui.toggleProcess();
-    }
-
-    /**
-     * moves a value in the array from index to newIndex, objects as needed
-     * 
-     * @param index index of value to move
-     * @param newIndex index to move value to
-     * @throws ArrayIndexOutOfBoundsException if either index or newIndex are invalid indexes
-     */
-    private void move(int index, int newIndex)
-    {
-        //do nothing if index and newIndex are the same
-        if(index == newIndex){return;}
-        //throw exception if indexes are invalid
-        if(index < 0 || index > getQuantity() || newIndex < 0 || newIndex > getQuantity()){throw new ArrayIndexOutOfBoundsException("index and newIndex must be valid indexes for the values array");}
-        double value = values[index];
-        //if newIndex comes before index
-        if(newIndex < index)
-        {
-            for(int i = index; i > newIndex; i--)
-            {
-                values[i] = values[i - 1];
-            }
-            values[newIndex] = value;
-        }
-        //else
-        else
-        {
-            for(int i = index; i < newIndex; i++)
-            {
-                values[i] = values[i + 1];
-            }
-            values[newIndex] = value;
-        }
     }
 
     /**
@@ -208,7 +162,7 @@ public class Sorter
     private void merge(int lowerBound, int midBound, int upperBound)
     {
         //check that bounds are valid TODO specify what about bounds is incorrect
-        if(upperBound <= midBound || midBound <= lowerBound || lowerBound < 0 || upperBound > getQuantity()){throw new IllegalArgumentException("Invalid bounds");}
+        if(upperBound <= midBound || midBound <= lowerBound || lowerBound < 0 || upperBound > size()){throw new IllegalArgumentException("Invalid bounds");}
         //check for abort
         if(gui.getAbortFlag()){return;}
 
@@ -218,9 +172,9 @@ public class Sorter
         while(writeIndex < readIndex && readIndex < upperBound)
         {
             gui.setSelector(writeIndex);
-            if(values[readIndex] < values[writeIndex])
+            if(values.get(readIndex) < values.get(writeIndex))
             {
-                move(readIndex, writeIndex);
+                values.move(readIndex, writeIndex);
                 readIndex++;
                 gui.updateBars();
             }
@@ -259,11 +213,11 @@ public class Sorter
     private void insertionSort()
     {
         //for each item
-        for(int i = 1; i < getQuantity(); i++)
+        for(int i = 1; i < size(); i++)
         {
             int j = i - 1;
             //while the previous item is greater than the current item and j is an index, decrement j
-            while(j != -1 && values[i] < values[j])
+            while(j != -1 && values.get(i) < values.get(j))
             {
                 gui.setSelector(j);
                 pause();
@@ -272,7 +226,7 @@ public class Sorter
             //if j changed, move item at i to j + 1
             if(j != i - 1)
             {
-                move(i, j + 1);
+                values.move(i, j + 1);
                 gui.updateBars();
             }
             //check for abortFlag
@@ -292,15 +246,13 @@ public class Sorter
         {
             sorted = true;
             //for each item pair
-            for(int i = 0; i < getQuantity() - 1; i++)
+            for(int i = 0; i < size() - 1; i++)
             {
                 gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
-                if(values[i] > values[i + 1])
+                if(values.get(i) > values.get(i + 1))
                 {
-                    double temp = values[i];
-                    values[i] = values[i + 1];
-                    values[i + 1] = temp;
+                    values.swap(i, i + 1);
                     sorted = false;
                     gui.updateBars();
                 }
@@ -318,25 +270,25 @@ public class Sorter
     private void selectionSort()
     {
         //for each item
-        for(int i = 0; i < getQuantity(); i++)
+        for(int i = 0; i < size(); i++)
         {
             gui.setSelector(i);
             //initialize minimums
-            double minValue = values[i];
+            double minValue = values.get(i);
             int minIndex = i;
             //for each unsorted item
-            for(int j = i + 1; j < getQuantity(); j++)
+            for(int j = i + 1; j < size(); j++)
             {
                 gui.setSelector(j);
                 //update min value if item j is smaller
-                if(values[j] < minValue)
+                if(values.get(j) < minValue)
                 {
-                    minValue = values[j];
+                    minValue = values.get(j);
                     minIndex = j;
                 }
             }
             //move min item to i
-            move(minIndex, i);
+            values.move(minIndex, i);
             gui.updateBars();
             //check for abortFlag
             if(gui.getAbortFlag()){gui.abort(); return;}
@@ -359,7 +311,7 @@ public class Sorter
     {
         boolean sorted = false;
         int start = 0;
-        int end = getQuantity() - 1;
+        int end = size() - 1;
 
         while(!sorted)
         {
@@ -369,11 +321,9 @@ public class Sorter
             {
                 gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
-                if(values[i] > values[i + 1])
+                if(values.get(i) > values.get(i + 1))
                 {
-                    double temp = values[i];
-                    values[i] = values[i + 1];
-                    values[i + 1] = temp;
+                    values.swap(i, i + 1);
                     sorted = false;
                     gui.updateBars();
                 }
@@ -389,11 +339,9 @@ public class Sorter
             {
                 gui.setSelector(i);
                 //if items are not in order, swap them and update sorted
-                if(values[i] > values[i + 1])
+                if(values.get(i) > values.get(i + 1))
                 {
-                    double temp = values[i];
-                    values[i] = values[i + 1];
-                    values[i + 1] = temp;
+                    values.swap(i, i + 1);
                     sorted = false;
                     gui.updateBars();
                 }
@@ -410,7 +358,7 @@ public class Sorter
     private void mergeSort()
     {
         //perform helper for all of items
-        mergeSortHelper(0, getQuantity());
+        mergeSortHelper(0, size());
         //check for abortFlag
         if(gui.getAbortFlag()){gui.abort(); return;}
         //indicate to gui that process has ended

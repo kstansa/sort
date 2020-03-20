@@ -53,8 +53,8 @@ public class Graphic extends JPanel
         this.sorter = sorter;
 
         //create CustomImage object
-        image = new CustomImage(sorter.getQuantity(), sorter.getMaxValue());
-        selectorImage = new SelectorImage(sorter.getQuantity());
+        image = new CustomImage(sorter.size(), sorter.getMaxValue());
+        selectorImage = new SelectorImage(sorter.size());
 
         //perform first write of sorter data
         initialWrite();
@@ -67,10 +67,10 @@ public class Graphic extends JPanel
     private void initialWrite()
     {
         //set displayed arr
-        displayedArr = sorter.getValues().clone();
+        displayedArr = sorter.cloneValues();
 
         //for each item
-        for(int i = 0; i < sorter.getQuantity(); i++)
+        for(int i = 0; i < sorter.size(); i++)
         {
             //paint bar
             image.paintBar(i, (int)displayedArr[i]);
@@ -156,7 +156,7 @@ public class Graphic extends JPanel
      */
     private int[] findDifferences()
     {
-        currentArr = sorter.getValues().clone();
+        currentArr = sorter.cloneValues();
         ArrayList<Integer> indexList = new ArrayList<Integer>();
         for(int i = 0; i < currentArr.length; i++)
         {
