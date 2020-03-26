@@ -45,7 +45,7 @@ public class Graphic extends JPanel
     public Graphic(Sorter sorter)
     {
         //JLabel constructor
-        super();
+        super(new BorderLayout());
         imageLabel = new JLabel(new ImageIcon());
         selectorLabel = new JLabel(new ImageIcon());
 
@@ -76,8 +76,8 @@ public class Graphic extends JPanel
             image.paintBar(i, (int)displayedArr[i]);
         }
 
-        add(selectorLabel);
-        add(imageLabel);
+        add(selectorLabel, BorderLayout.PAGE_START);
+        add(imageLabel, BorderLayout.CENTER);
 
         //update display
         updateBoth();
@@ -91,6 +91,15 @@ public class Graphic extends JPanel
     public void setSelector(int index)
     {
         selectorImage.setSelector(index);
+        updateSelector();
+    }
+    
+    /**
+     * Hides the selector until the next time setSelector() is called
+     */
+    public void hideSelector()
+    {
+        selectorImage.hideSelector();
         updateSelector();
     }
 
@@ -284,6 +293,11 @@ public class Graphic extends JPanel
             setRGB(selectorIndex, 0, BACKGROUND.getRGB());
             selectorIndex = index;
             setRGB(selectorIndex, 0, SELECTOR.getRGB());
+        }
+        
+        public void hideSelector()
+        {
+            setRGB(selectorIndex, 0, BACKGROUND.getRGB());
         }
     }
 }

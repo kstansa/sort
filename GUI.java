@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.imageio.*;
 import java.text.NumberFormat;
 import javax.swing.text.NumberFormatter;
 import java.lang.Number;
@@ -33,9 +34,14 @@ public class GUI extends JFrame
     private boolean verbFlag;
 
     private GenerationPanel generationPanel;
+    private JPanel generationPanelContainer;
+    private JButton minimizeButton;
 
     private JPanel graphicsPanel;
     private Graphic graphic;
+    private ImageIcon expandIcon;
+    private ImageIcon minimizeIcon;
+    private ImageIcon windowIcon;
 
     private Sorter sorter;
 
@@ -55,7 +61,7 @@ public class GUI extends JFrame
      */
     public GUI(boolean devFlag, boolean verbFlag)
     {
-        super("Sort Demos");
+        super("Sorting Algorithm Visualizer");
         this.devFlag = devFlag;
         this.verbFlag = verbFlag;
         this.processFlag = false;
@@ -78,40 +84,58 @@ public class GUI extends JFrame
         generateGraphics();
         generationPanel = new GenerationPanel();
 
-        //create content pane
-        JPanel contentPane = new JPanel(new BorderLayout());
-        contentPane.add(graphicsPanel, BorderLayout.CENTER);
-        JPanel tempPane = new JPanel(new BorderLayout());
-        tempPane.add(generationPanel, BorderLayout.LINE_START);
-        if(devFlag)
-        {
-            tempPane.add(threadList, BorderLayout.CENTER);
-            if(verbFlag)
-            {
-                sysOut = new JTextArea("");
-                sysOut.setEditable(false);
-                tempPane.add(sysOut, BorderLayout.LINE_END);
-            }
-        }
-        else if(verbFlag)
-        {
-            sysOut = new JTextArea("");
-            sysOut.setEditable(false);
-            tempPane.add(sysOut, BorderLayout.CENTER);
-        }
-        if(verbFlag)
-        {
-            PrintStream printStream = new PrintStream(new CustomOutputStream(sysOut));
-            System.setOut(printStream);
-            System.setErr(printStream);
-            System.out.println("Verbose Mode Active");
-        }
-        contentPane.add(tempPane, BorderLayout.PAGE_START);
-        setContentPane(contentPane);
+        //load icons
+        expandIcon = new ImageIcon("resources/expand.jpg");
+        minimizeIcon = new ImageIcon("resources/minimize.jpg");
+        windowIcon = new ImageIcon("resources/sort.jpg");
+
+        //minimize generation panel button
+        minimizeButton = new JButton(minimizeIcon);
+        minimizeButton.setActionCommand("minimize");
+        minimizeButton.addActionListener(generationPanel);
+
+        //         //create content pane
+        //         JPanel contentPane = new JPanel(new BorderLayout());
+        //         contentPane.add(graphicsPanel, BorderLayout.CENTER);
+        //         JPanel tempPane = new JPanel(new BorderLayout());
+        //         tempPane.add(generationPanel, BorderLayout.LINE_START);
+        //         if(devFlag)
+        //         {
+        //             tempPane.add(threadList, BorderLayout.CENTER);
+        //             if(verbFlag)
+        //             {
+        //                 sysOut = new JTextArea("");
+        //                 sysOut.setEditable(false);
+        //                 tempPane.add(sysOut, BorderLayout.LINE_END);
+        //             }
+        //         }
+        //         else if(verbFlag)
+        //         {
+        //             sysOut = new JTextArea("");
+        //             sysOut.setEditable(false);
+        //             tempPane.add(sysOut, BorderLayout.CENTER);
+        //         }
+        //         if(verbFlag)
+        //         {
+        //             PrintStream printStream = new PrintStream(new CustomOutputStream(sysOut));
+        //             System.setOut(printStream);
+        //             System.setErr(printStream);
+        //             System.out.println("Verbose Mode Active");
+        //         }
+        //         contentPane.add(tempPane, BorderLayout.PAGE_START);
+        setContentPane(graphicsPanel);
+        JLayeredPane layeredPane = getLayeredPane();
+        //generationPanel.setSize(new Dimension(250, 250));
+        generationPanel.setLocation(0, 0);
+        layeredPane.add(generationPanel, JLayeredPane.PALETTE_LAYER);
+
+        minimizeButton.setBounds(new Rectangle(new Point(0, 0), new Dimension(20, 20)));//temporaty magic numbers
+        layeredPane.add(minimizeButton, new Integer(JLayeredPane.PALETTE_LAYER.intValue() + 1));
 
         //configure frame settings
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(500, 500));
+        setIconImage(windowIcon.getImage());
         //start at maximum size
         setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
         setVisible(true);
@@ -220,7 +244,7 @@ public class GUI extends JFrame
     public void abort()
     {
         abortFlag = false;
-        toggleProcess();
+        generationPanel.toggleProcess();
     }
 
     /**
@@ -239,7 +263,7 @@ public class GUI extends JFrame
         private JButton shuffleButton;
         private JButton sortButton;
         private JButton abortButton;
-        private GridBagLayout gridBag = new GridBagLayout();
+        public GridBagLayout gridBag = new GridBagLayout();
         private GridBagConstraints constraints = new GridBagConstraints();
 
         public GenerationPanel()
@@ -420,8 +444,18 @@ public class GUI extends JFrame
             //add delay box
             //             gridBag.setConstraints(delayBox, constraints);
             //             add(delayBox);
-            //Set panel size
-            //setPreferredSize(new Dimension(500, 250));
+            
+            //misc panel config
+            setSize(gridBag.preferredLayoutSize(this));
+            setBorder(BorderFactory.createLineBorder(Color.RED));
+        }
+
+        public Dimension getButtonDimension()
+        {
+            Object temp = gridBag.getLayoutDimensions();
+            //if(processFlag)
+            return new Dimension(gridBag.getLayoutDimensions()[1][0], gridBag.getLayoutDimensions()[1][0]);
+            //return new Dimension(50, 50);
         }
 
         private void toggleProcess()
@@ -436,6 +470,8 @@ public class GUI extends JFrame
                 shuffleButton.setEnabled(true);
                 sortButton.setEnabled(true);
                 abortButton.setEnabled(false);
+                //hide the selector
+                graphic.hideSelector();
 
                 processFlag = false;
             }
@@ -523,9 +559,21 @@ public class GUI extends JFrame
                         sorter.type = (String)sortTypes.getSelectedItem();
                     }
                 }
+                else if(command.equals("minimize"))
+                {
+                    minimizeButton.setIcon(expandIcon);
+                    minimizeButton.setActionCommand("expand");
+                    setVisible(false);
+                }
+                else if(command.equals("expand"))
+                {
+                    minimizeButton.setIcon(minimizeIcon);
+                    minimizeButton.setActionCommand("minimize");
+                    setVisible(true);
+                }
                 else
                 {
-                    throw new IllegalArgumentException("Unknown action");
+                    throw new IllegalArgumentException("Unknown action \"" + command + "\"");
                 }
             }
         }
