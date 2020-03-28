@@ -1,4 +1,4 @@
-
+package sort;
 /**
  * Class GhostGUI - A GUI where all public methods are overriden with methods that do nothing and no instance variables are initialized
  * 
