@@ -1,9 +1,9 @@
 package sort;
 /**
- * Class Application - Contains the main method that starts the application
+ * Contains the main method that starts the application
  * 
  * @author Liam Geyer
- * @version v1.0.0
+ * @version 1.0.0
  */
 public class Application
 {
@@ -30,7 +30,7 @@ public class Application
             {
                 public void run()
                 {
-                    GUI gui = new GUI(devArg, verbArg);
+                    new GUI(devArg, verbArg);
                 }
             }
         );

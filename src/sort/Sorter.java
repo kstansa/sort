@@ -1,9 +1,8 @@
 package sort;
-import java.lang.reflect.*;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 
 /**
- * Abstract class Sorter - describes an array of items to be sorted
+ * Provides methods to sort ValueArrays and shuffle them while updating a GUI
  * 
  * @author Liam Geyer
  * @version v1.0.0
@@ -28,7 +27,7 @@ public class Sorter
      * @param gui GUI that methods update. Set to a GhostGUI if set to null
      * @throws IllegalArgumentException if quantity or maxValue are invalid values
      */
-    public Sorter(int quantity, int maxValue, String type)
+    public Sorter(int quantity, int maxValue, String type, int generationMethod)
     {
         //throw IllegalArgumentExeptions
         if(quantity <= 0 || quantity > MAX_QUANTITY){throw new IllegalArgumentException("Quantity must be greater than 0 and less than " + MAX_QUANTITY);}
@@ -39,7 +38,7 @@ public class Sorter
         this.maxValue = maxValue;
         gui = new GhostGUI();
         //initialize values
-        values = new ValuesArray(quantity, maxValue);
+        values = new ValuesArray(quantity, maxValue, generationMethod);
     }
 
     /*
@@ -186,32 +185,38 @@ public class Sorter
     }
 
     /**
-     * sorts the sorter object using the algorithm defined by type and updates the param gui's graphic
+     * sorts the sorter object using the algorithm defined by type and updates the this' gui's graphic
      */
     public void sort()
     {
-        Method method = null;
-        try
+    	//SORT_TYPES = {"insertion", "bubble", "selection", "cocktail", "merge"}
+        switch(type)
         {
-            Class<?> c = Class.forName("Sorter");
-            method = c.getDeclaredMethod(type + "Sort");
+        case "insertion":
+        	insertionSort();
+        	break;
+        case "bubble":
+        	bubbleSort();
+        	break;
+        case "selection":
+        	selectionSort();
+        	break;
+        case "cocktail":
+        	cocktailSort();
+        	break;
+        case "merge":
+        	mergeSort();
+        	break;
+        default:
+        	throw new IllegalStateException("Invalid Type");
         }
-        catch(SecurityException e){e.printStackTrace();}
-        catch(NoSuchMethodException e){e.printStackTrace();}
-        catch(ClassNotFoundException e){e.printStackTrace();}
-        try
-        {
-            method.invoke(this);
-        }
-        catch(IllegalArgumentException e){e.printStackTrace();}
-        catch(IllegalAccessException e){e.printStackTrace();}
-        catch(InvocationTargetException e){e.printStackTrace();}
     }
 
     /**
      * Find out of place item, then insert it into correct position
      */
-    private void insertionSort()
+    @SuppressWarnings("unused") //called using reflection, never explicitly called
+	private void insertionSort()
     {
         //for each item
         for(int i = 1; i < size(); i++)
@@ -240,6 +245,7 @@ public class Sorter
     /**
      * Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in wrong order.
      */
+    @SuppressWarnings("unused") //called using reflection, never explicitly called
     private void bubbleSort()
     {
         boolean sorted = false;
@@ -268,6 +274,7 @@ public class Sorter
     /**
      * The selection sort algorithm sorts an array by repeatedly finding the minimum element (considering ascending order) from unsorted part and putting it at the beginning.
      */
+    @SuppressWarnings("unused") //called using reflection, never explicitly called
     private void selectionSort()
     {
         //for each item
@@ -308,6 +315,7 @@ public class Sorter
      * The second stage loops through the array in opposite direction- starting from the item just before the most recently sorted item, and moving back to the start of the array. 
      * Here also, adjacent items are compared and are swapped if required.
      */
+    @SuppressWarnings("unused") //called using reflection, never explicitly called
     private void cocktailSort()
     {
         boolean sorted = false;
@@ -356,6 +364,7 @@ public class Sorter
         gui.toggleProcess();
     }
 
+    @SuppressWarnings("unused") //called using reflection, never explicitly called
     private void mergeSort()
     {
         //perform helper for all of items

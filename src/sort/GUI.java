@@ -1,42 +1,31 @@
 package sort;
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.imageio.*;
 import java.text.NumberFormat;
 import javax.swing.text.NumberFormatter;
 
-import java.lang.Number;
 import java.awt.*;
-import java.awt.GridBagConstraints;
 import java.awt.event.*;
-import java.awt.image.*;
-import java.util.*;
-import java.io.*;
 
 /**
- * Class GUI - represents the user interface for sort object
+ * Represents the user interface for sort object
  * 
  * @author Liam Geyer
  * @version v1.0.0
  */
+@SuppressWarnings("serial")
 public class GUI extends JFrame
 {
-    //Help: https://docs.oracle.com/javase/tutorial/uiswing/components/index.html
     private static final String[] SORT_TYPES = Sorter.SORT_TYPES;
     private final int DEFAULT_QUANTITY = 250;
     private final int DEFAULT_MAX_VALUE = 1000;
     private final int MAX_QUANTITY = 10000;
     private final int MAX_MAX_VALUE = 10000;
-    private JLabel threadCount;
-    private JTextArea threadList;
-    private JTextArea sysOut;
     private boolean processFlag;
     private boolean abortFlag;
-    private boolean devFlag;
-    private boolean verbFlag;
+    //private boolean devFlag;
+    //private boolean verbFlag;
 
     private GenerationPanel generationPanel;
-    private JPanel generationPanelContainer;
     private JButton minimizeButton;
 
     private JPanel graphicsPanel;
@@ -64,26 +53,14 @@ public class GUI extends JFrame
     public GUI(boolean devFlag, boolean verbFlag)
     {
         super("Sorting Algorithm Visualizer");
-        this.devFlag = devFlag;
-        this.verbFlag = verbFlag;
+        //this.devFlag = devFlag;
+        //this.verbFlag = verbFlag;
         this.processFlag = false;
         this.abortFlag = false;
 
-        //create thread counter if dev mode
-        if(devFlag)
-        {
-            threadCount = new JLabel("", JLabel.CENTER);
-            threadList = new JTextArea("");
-            threadList.setLineWrap(true);
-            threadList.setEditable(false);
-            ThreadCounterRunnable tCRunnable = new ThreadCounterRunnable();
-            Thread tCThread = new Thread(tCRunnable);
-            tCThread.setName("thread-info-listener");
-            tCThread.start();
-        }
-
         //create panels
-        generateGraphics();
+        graphicsPanel = new JPanel(new BorderLayout());
+        graphicsPanel.add(new JLabel("No Sorter To Display", JLabel.CENTER), BorderLayout.CENTER);
         generationPanel = new GenerationPanel();
 
         //load icons
@@ -96,43 +73,15 @@ public class GUI extends JFrame
         minimizeButton.setActionCommand("minimize");
         minimizeButton.addActionListener(generationPanel);
 
-        //         //create content pane
-        //         JPanel contentPane = new JPanel(new BorderLayout());
-        //         contentPane.add(graphicsPanel, BorderLayout.CENTER);
-        //         JPanel tempPane = new JPanel(new BorderLayout());
-        //         tempPane.add(generationPanel, BorderLayout.LINE_START);
-        //         if(devFlag)
-        //         {
-        //             tempPane.add(threadList, BorderLayout.CENTER);
-        //             if(verbFlag)
-        //             {
-        //                 sysOut = new JTextArea("");
-        //                 sysOut.setEditable(false);
-        //                 tempPane.add(sysOut, BorderLayout.LINE_END);
-        //             }
-        //         }
-        //         else if(verbFlag)
-        //         {
-        //             sysOut = new JTextArea("");
-        //             sysOut.setEditable(false);
-        //             tempPane.add(sysOut, BorderLayout.CENTER);
-        //         }
-        //         if(verbFlag)
-        //         {
-        //             PrintStream printStream = new PrintStream(new CustomOutputStream(sysOut));
-        //             System.setOut(printStream);
-        //             System.setErr(printStream);
-        //             System.out.println("Verbose Mode Active");
-        //         }
-        //         contentPane.add(tempPane, BorderLayout.PAGE_START);
+        //set content pane
         setContentPane(graphicsPanel);
         JLayeredPane layeredPane = getLayeredPane();
-        //generationPanel.setSize(new Dimension(250, 250));
+        generationPanel.setSize(200, 150);
         generationPanel.setLocation(0, 0);
         layeredPane.add(generationPanel, JLayeredPane.PALETTE_LAYER);
 
-        minimizeButton.setBounds(new Rectangle(new Point(0, 0), new Dimension(20, 20)));//temporaty magic numbers
-        layeredPane.add(minimizeButton, new Integer(JLayeredPane.PALETTE_LAYER.intValue() + 1));
+        minimizeButton.setBounds(new Rectangle(new Point(0, 0), new Dimension(20, 20)));//temporary magic numbers
+        layeredPane.add(minimizeButton, JLayeredPane.MODAL_LAYER);
 
         //configure frame settings
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,16 +103,6 @@ public class GUI extends JFrame
     }
 
     //graphics events
-    /**
-     * Generates the graphics panel
-     */
-    private void generateGraphics()
-    {
-        //TODO Proper Layout
-        graphicsPanel = new JPanel(new BorderLayout());
-
-        graphicsPanel.add(new JLabel("No Sorter To Display", JLabel.CENTER), BorderLayout.CENTER);
-    }
 
     /**
      * Calls updateBars for the contained graphic object
@@ -254,32 +193,34 @@ public class GUI extends JFrame
      */
     private class GenerationPanel extends JPanel implements ActionListener
     {
-        protected JComboBox sortTypes;
+		protected JComboBox<String> sortTypes;
+		private JComboBox<String> genMethods;
         private NumberFormat numberFormat;
         private JFormattedTextField quantityBox;
         private JFormattedTextField maxValueBox;
-        private JFormattedTextField delayBox;
+        //private JFormattedTextField delayBox;
         private JButton quantityReset;
         private JButton maxValueReset;
         private JButton generateButton;
         private JButton shuffleButton;
         private JButton sortButton;
         private JButton abortButton;
-        public GridBagLayout gridBag = new GridBagLayout();
-        private GridBagConstraints constraints = new GridBagConstraints();
+        private GridLayout layout;
 
         public GenerationPanel()
         {
             super();
 
-            setLayout(gridBag);
+            layout = new GridLayout(6, 2, 1, 1);
+            setLayout(layout);
+            
 
             /*
              * prepare components
              */
 
             //combo box for types
-            sortTypes = new JComboBox(SORT_TYPES);
+            sortTypes = new JComboBox<String>(SORT_TYPES);
             sortTypes.setActionCommand("type_change");
             sortTypes.addActionListener(this);
 
@@ -311,6 +252,9 @@ public class GUI extends JFrame
             maxValueReset = new JButton("reset");
             maxValueReset.setActionCommand("reset_max_value");
             maxValueReset.addActionListener(this);
+            
+            //generation method selector
+            genMethods = new JComboBox<String>(ValuesArray.GENERATION_METHODS);
 
             //generate button
             generateButton = new JButton("generate");
@@ -344,29 +288,15 @@ public class GUI extends JFrame
              */
 
             //add header
-            constraints.fill = GridBagConstraints.BOTH; //size component to fill box
-            constraints.gridwidth = GridBagConstraints.REMAINDER; //Make next component take up rest of row
-            if(devFlag)
-            {
-                gridBag.setConstraints(threadCount, constraints);
-                add(threadCount);
-            }
-            else
-            {
-                JLabel header = new JLabel("Options", JLabel.CENTER);
-                gridBag.setConstraints(header, constraints);
-                add(header);
-            }
+            //JLabel header = new JLabel("Opti", JLabel.RIGHT);
+            //add(header);
+            //add(new JLabel("ons"));
 
             //add label for method selector
-            constraints.gridwidth = GridBagConstraints.RELATIVE; //next-to-last in row
-            JLabel sortMethodLabel = new JLabel("Sort Method: ");
-            gridBag.setConstraints(sortMethodLabel, constraints);
-            add(sortMethodLabel);
+            JLabel selectorLabel = new JLabel("Sort Method:", JLabel.CENTER);
+            add(selectorLabel);
 
             //add method selector
-            constraints.gridwidth = GridBagConstraints.REMAINDER; //Make next component take up rest of row
-            gridBag.setConstraints(sortTypes, constraints);
             add(sortTypes);
 
             /*
@@ -374,61 +304,44 @@ public class GUI extends JFrame
              */
 
             //add quantity label
-            constraints.gridwidth = 1;
-            JLabel quantityLabel = new JLabel("Quantity: ");
-            gridBag.setConstraints(quantityLabel, constraints);
+            JLabel quantityLabel = new JLabel("Quantity:", JLabel.CENTER);
             add(quantityLabel);
 
             //add quantity box
-            constraints.gridwidth = GridBagConstraints.RELATIVE;
-            gridBag.setConstraints(quantityBox, constraints);
             add(quantityBox);
-
-            //add reset button for quantity
-            constraints.gridwidth = GridBagConstraints.REMAINDER;
-            gridBag.setConstraints(quantityReset, constraints);
-            add(quantityReset);
 
             /*
              * New Line
              */
 
             //add max value label
-            constraints.gridwidth = 1;
-            JLabel maxValueLabel = new JLabel("Max Value: ");
-            gridBag.setConstraints(maxValueLabel, constraints);
-            add(maxValueLabel);
+            JLabel mvLabel = new JLabel("Max Value:", JLabel.CENTER);
+            add(mvLabel);
 
             //add max value box
-            constraints.gridwidth = GridBagConstraints.RELATIVE;
-            gridBag.setConstraints(maxValueBox, constraints);
             add(maxValueBox);
 
-            //add reset button for max value
-            constraints.gridwidth = GridBagConstraints.REMAINDER;
-            gridBag.setConstraints(maxValueReset, constraints);
-            add(maxValueReset);
 
             /*
              * New Line
              */
+            
+            add(new JLabel("test", JLabel.CENTER));
+            add(genMethods);
 
             //add generate button
-            gridBag.setConstraints(generateButton, constraints);
+            //JLabel generateLabel = new JLabel("Generate:", JLabel.CENTER);
+            //add(generateLabel);
             add(generateButton);
 
             /*
              * New Line
              */
 
-            //add shuffleButton
-            constraints.gridwidth = GridBagConstraints.RELATIVE;
-            gridBag.setConstraints(shuffleButton, constraints);
+            //add shuffle button
             add(shuffleButton);
 
             //add sort button
-            constraints.gridwidth = GridBagConstraints.REMAINDER;
-            gridBag.setConstraints(sortButton, constraints);
             add(sortButton);
 
             /*
@@ -436,7 +349,6 @@ public class GUI extends JFrame
              */
 
             //add abort button
-            gridBag.setConstraints(abortButton, constraints);
             add(abortButton);
 
             /*
@@ -444,20 +356,9 @@ public class GUI extends JFrame
              */
 
             //add delay box
-            //             gridBag.setConstraints(delayBox, constraints);
-            //             add(delayBox);
             
             //misc panel config
-            setSize(gridBag.preferredLayoutSize(this));
             setBorder(BorderFactory.createLineBorder(Color.RED));
-        }
-
-        public Dimension getButtonDimension()
-        {
-            Object temp = gridBag.getLayoutDimensions();
-            //if(processFlag)
-            return new Dimension(gridBag.getLayoutDimensions()[1][0], gridBag.getLayoutDimensions()[1][0]);
-            //return new Dimension(50, 50);
         }
 
         private void toggleProcess()
@@ -534,7 +435,7 @@ public class GUI extends JFrame
                         return;
                     }
                     String type = (String)sortTypes.getSelectedItem();
-                    sorter = new Sorter(quantity, maxValue, type);
+                    sorter = new Sorter(quantity, maxValue, type, genMethods.getSelectedIndex());
                     sorter.setGUI(GUI.this);
                     shuffleButton.setEnabled(true);
                     sortButton.setEnabled(true);
@@ -545,7 +446,7 @@ public class GUI extends JFrame
                     toggleProcess();
                     sorter.shuffle();
                 }
-                else if(command.equals("sort"))
+		        else if(command.equals("sort"))
                 {
                     toggleProcess();
                     sorter.sort();
@@ -580,46 +481,4 @@ public class GUI extends JFrame
             }
         }
     }
-
-    /**
-     * Runnable for keeping the thread counter and list up to date
-     */
-    private class ThreadCounterRunnable implements Runnable
-    {
-        public void run()
-        {
-            ThreadGroup currentTG = Thread.currentThread().getThreadGroup();
-            while(devFlag)
-            {
-                threadCount.setText("Thread Count for Thread Group " + currentTG.getName() + ": " + currentTG.activeCount());
-                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-                threadList.setText(threadSet.toString());
-            }
-        }
-    }
-
-    /**
-     * Changes System.out to the parameter text area
-     */
-    private class CustomOutputStream extends OutputStream
-    {
-        private JTextArea textArea;
-
-        public CustomOutputStream(JTextArea textArea)
-        {
-            this.textArea = textArea;
-        }
-
-        @Override
-        public void write(int b) throws IOException
-        {
-            // redirects data to the text area
-            textArea.append(String.valueOf((char)b));
-            // scrolls the text area to the end of data
-            textArea.setCaretPosition(textArea.getDocument().getLength());
-            // keeps the textArea up to date
-            textArea.update(textArea.getGraphics());
-        }
-    }
 }
-

@@ -6,15 +6,16 @@ import java.awt.image.*;
 import java.util.ArrayList;
 
 /**
- * Class Graphic - A graphical representation of a sorter's items array
+ * A graphical representation of a sorter's items array
  * 
  * @author Liam Geyer
  * @version v1.0.0
  */
 //JLabel <-- ImageIcon <-- BufferedImage (which is subclass of image)
+@SuppressWarnings("serial")
 public class Graphic extends JPanel
 {
-    //Numeric constants
+	//Numeric constants
     private final double EPSILON = 0.001;
     //Color constants
     private final Color BARS = Color.GRAY;
@@ -173,7 +174,7 @@ public class Graphic extends JPanel
         {
             if(Math.abs(displayedArr[i] - currentArr[i]) > EPSILON)
             {
-                indexList.add(new Integer(i));
+                indexList.add(i);
             }
         }
         int[] output = new int[indexList.size()];
