@@ -72,19 +72,22 @@ public class GUI extends JFrame
         minimizeButton = new JButton(minimizeIcon);
         minimizeButton.setActionCommand("minimize");
         minimizeButton.addActionListener(generationPanel);
-
+        minimizeButton.setToolTipText("Toggles the generation panel");
+        
         //set content pane
         setContentPane(graphicsPanel);
         JLayeredPane layeredPane = getLayeredPane();
         generationPanel.setSize(200, 150);
         generationPanel.setLocation(0, 0);
         layeredPane.add(generationPanel, JLayeredPane.PALETTE_LAYER);
+        
 
-        minimizeButton.setBounds(new Rectangle(new Point(0, 0), new Dimension(20, 20)));//temporary magic numbers
+        minimizeButton.setBounds(generationPanel.getWidth(), 0, minimizeIcon.getIconWidth(), minimizeIcon.getIconHeight());
         layeredPane.add(minimizeButton, JLayeredPane.MODAL_LAYER);
 
         //configure frame settings
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //addKeyListener(new KeyAdapter{public void keyPressed(KeyEvent e) {keybind();}});
         setMinimumSize(new Dimension(500, 500));
         setIconImage(windowIcon.getImage());
         //start at maximum size
@@ -102,6 +105,10 @@ public class GUI extends JFrame
         //does nothing
     }
 
+    private void keybind()
+    {
+    	
+    }
     //graphics events
 
     /**
@@ -187,7 +194,7 @@ public class GUI extends JFrame
         abortFlag = false;
         generationPanel.toggleProcess();
     }
-
+    
     /**
      * GenerationPanel Class - represents a panel containing the controls for generating and modifying sort objects
      */
@@ -326,7 +333,7 @@ public class GUI extends JFrame
              * New Line
              */
             
-            add(new JLabel("test", JLabel.CENTER));
+            add(new JLabel("Value Gen:", JLabel.CENTER));
             add(genMethods);
 
             //add generate button
@@ -466,12 +473,14 @@ public class GUI extends JFrame
                 {
                     minimizeButton.setIcon(expandIcon);
                     minimizeButton.setActionCommand("expand");
+                    minimizeButton.setBounds(0, 0, minimizeIcon.getIconWidth(), minimizeIcon.getIconHeight());
                     setVisible(false);
                 }
                 else if(command.equals("expand"))
                 {
                     minimizeButton.setIcon(minimizeIcon);
                     minimizeButton.setActionCommand("minimize");
+                    minimizeButton.setBounds(generationPanel.getWidth(), 0, minimizeIcon.getIconWidth(), minimizeIcon.getIconHeight());
                     setVisible(true);
                 }
                 else

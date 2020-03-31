@@ -3,7 +3,7 @@ package sort;
 import java.util.*;
 
 /**
- * Class ValuesArray - represents an array of randomly generated double values;
+ * Represents an array of randomly generated double values;
  * after construction, values cannot be modified, added, or removed. Objects may
  * only change their position in the array
  * 
